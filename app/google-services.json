@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "512898307994",
+    "project_id": "specialmps",
+    "storage_bucket": "specialmps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:512898307994:android:4c8b42dc12ff6ecda84c23",
+        "android_client_info": {
+          "package_name": "com.example.specialmps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "512898307994-rvebj46nvr4ni4m8fcga0bmv4a4lmhdv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALXSeqP0gYgmeOQfUw1EtlrINiTt4B3x8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "512898307994-rvebj46nvr4ni4m8fcga0bmv4a4lmhdv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

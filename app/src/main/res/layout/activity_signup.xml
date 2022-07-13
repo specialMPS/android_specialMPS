@@ -21,7 +21,7 @@
             android:text="이름" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/signup_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -43,7 +43,7 @@
             android:text="아이디" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName2"
+            android:id="@+id/signup_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -72,7 +72,7 @@
             android:text="비밀번호" />
 
         <EditText
-            android:id="@+id/editTextTextPassword"
+            android:id="@+id/signup_pw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -92,12 +92,6 @@
             android:layout_weight="1"
             android:text="성별" />
 
-        <Switch
-            android:id="@+id/switch1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Switch" />
     </LinearLayout>
 
     <LinearLayout

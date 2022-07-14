@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "512898307994",
+    "firebase_url": "https://specialmps-default-rtdb.firebaseio.com",
     "project_id": "specialmps",
     "storage_bucket": "specialmps.appspot.com"
   },
@@ -13,6 +14,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "512898307994-0u393emls3q9ttrccs8a0mkqkk8j6srp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.specialmps",
+            "certificate_hash": "a31f63bdf67161c1603870fa078f61fd4f6c6136"
+          }
+        },
+        {
+          "client_id": "512898307994-cm3l05rkukq1145gimsjut11pc0t7gma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.specialmps",
+            "certificate_hash": "ea5e0c9ebf0bd5df006dba765e6974f98a71b0d9"
+          }
+        },
         {
           "client_id": "512898307994-rvebj46nvr4ni4m8fcga0bmv4a4lmhdv.apps.googleusercontent.com",
           "client_type": 3

@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_login.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_chatting.xml" value="0.1" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_recorded_chat.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/chat_ballon.xml" value="0.22" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/chat_ballon_etc.xml" value="0.22" />
       </map>
     </option>
   </component>

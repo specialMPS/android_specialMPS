@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Chatting">
+    tools:context=".RecordedChat">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/layout_group_chat"
@@ -25,59 +25,28 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_chat"
+        android:id="@+id/record_recycler_chat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
         android:layout_marginBottom="16dp"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/chat_ballon"
+        app:layout_constraintBottom_toTopOf="@+id/record_chat_ballon"
         app:layout_constraintBottom_toBottomOf="@+id/layout_group_chat"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/chat_ballon"
+        android:id="@+id/record_chat_ballon"
         android:layout_marginStart="16dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintBottom_toTopOf="@+id/record_view"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:id="@+id/view"
+        android:id="@+id/record_view"
         android:background="#86E57F"
-        app:layout_constraintBottom_toTopOf="@+id/layout_chat_chatbox"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/layout_chat_chatbox"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <EditText
-            android:layout_marginStart="16dp"
-            android:id="@+id/edit_chat_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/btn_chat_send"
-            android:background="@android:color/transparent"
-            android:hint="메세지를 입력해주세요."
-            android:inputType="text"
-            android:maxLines="6"
-            tools:ignore="Autofill"/>
-
-        <Button
-            android:layout_width="64dp"
-            android:layout_height="48dp"
-            android:id="@+id/btn_chat_send"
-            android:layout_alignParentEnd="true"
-            android:background="?attr/selectableItemBackground"
-            android:text="보내기"
-            android:textColor="@color/colorPrimary"/>
-    </RelativeLayout>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

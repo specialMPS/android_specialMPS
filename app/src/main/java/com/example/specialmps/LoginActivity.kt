@@ -24,20 +24,23 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun checkAccount(id:String, pw:String){
-        val database=mDatabase.getReference("Users")
+        val database=mDatabase.getReference("User")
         database.addValueEventListener(object :ValueEventListener{
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(shot in snapshot.children){
                     if(shot.key.toString()==id){
+                        Log.i("id일치",id)
                         val user=shot.getValue(UserInfo::class.java)
                         if(user!=null){
                             if(user.pw==pw){
                                 Toast.makeText(this@LoginActivity,user.name+"님이 로그인하셨습니다.",Toast.LENGTH_SHORT).show()
-                                val i=Intent(this@LoginActivity,MainActivity::class.java)
+                                //* 메뉴화면 생기면 해당 액티비티로 넘어가기/////////////////////////////////////////////////////////////
+                                val i=Intent(this@LoginActivity,Chatting::class.java)
                                 i.putExtra("userID",id)
                                 startActivity(i)
                                 finish()
+                                // */
                             }
                         }else{
                             Toast.makeText(this@LoginActivity,"없는 계정이거나 비밀번호가 맞지 않습니다.",Toast.LENGTH_SHORT).show()
@@ -56,22 +59,22 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun btnClick(){
-        signup.setOnClickListener {
+        signup_btn.setOnClickListener {
             //회원가입 창
             val i=Intent(this,Signup::class.java)
             startActivity(i)
             finish()
         }
 
-        login.setOnClickListener {
-            val _id=id.text.toString()
-            val _pw=password.text.toString()
+        login_btn.setOnClickListener {
+            val _id=id_input.text.toString()
+            val _pw=pwd_input.text.toString()
 
             checkAccount(_id,_pw)
             val hand=Handler()
             hand.postDelayed({
-                id.setText("")
-                password.setText("")
+                id_input.setText("")
+                pwd_input.setText("")
             },2000)
         }
     }

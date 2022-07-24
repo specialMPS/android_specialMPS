@@ -36,8 +36,11 @@ class LoginActivity : AppCompatActivity() {
                             if(user.pw==pw){
                                 Toast.makeText(this@LoginActivity,user.name+"님이 로그인하셨습니다.",Toast.LENGTH_SHORT).show()
                                 //* 메뉴화면 생기면 해당 액티비티로 넘어가기/////////////////////////////////////////////////////////////
-                                val i=Intent(this@LoginActivity,Chatting::class.java)
+                                //val i=Intent(this@LoginActivity,Chatting::class.java)
+                                //i.putExtra("userID",id)
+                                val i=Intent(this@LoginActivity,RecordedChat::class.java)
                                 i.putExtra("userID",id)
+                                i.putExtra("resultID","2022-07-17")
                                 startActivity(i)
                                 finish()
                                 // */

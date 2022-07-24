@@ -3,6 +3,8 @@ package com.example.specialmps
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
@@ -28,6 +30,12 @@ class Chatting : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)
+
+        //뒤로가기 버튼
+        val toolbar:Toolbar=findViewById(R.id.toolbar_channel)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowTitleEnabled(false) //toolbar에 title 보이지 않도록 설정
 
         if(intent.hasExtra("userID")){
             user= intent.getStringExtra("userID").toString()
@@ -85,14 +93,26 @@ class Chatting : AppCompatActivity() {
         //saveDB(messageList)
     }
 
-    fun currentTime():String{//현재시간
-        //val currentTime=LocalTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        val now=System.currentTimeMillis()
-        val mDate= Date(now)
-        val timeFormat=SimpleDateFormat("hh:ss")
-        val currentTime=timeFormat.format(mDate)
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
 
-        return currentTime
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when(item.itemId){
+//            R.id.home -> { //toolbar의 back이 눌렸을 때
+//                this.finish() //현재 액티비티 종료
+//                return true
+//            }
+//
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
+
+    fun currentTime():String{//현재시간
+        val time=LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+
+        return time
     }
 
     fun saveDB(chat:List<Message>){ //대화종료 후

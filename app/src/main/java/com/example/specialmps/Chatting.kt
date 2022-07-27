@@ -93,21 +93,22 @@ class Chatting : AppCompatActivity() {
         //saveDB(messageList)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when(item.itemId){
-//            R.id.home -> { //toolbar의 back이 눌렸을 때
-//                this.finish() //현재 액티비티 종료
-//                return true
-//            }
-//
-//        }
-//        return super.onOptionsItemSelected(item)
+//    override fun onSupportNavigateUp(): Boolean {
+//        onBackPressed()
+//        return true
 //    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> { //toolbar의 back이 눌렸을 때
+                //메뉴 액티비티로 이동되는 구문 추가
+                finish() //현재 액티비티 종료
+                return true
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     fun currentTime():String{//현재시간
         val time=LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))

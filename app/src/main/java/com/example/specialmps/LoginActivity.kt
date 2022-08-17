@@ -1,11 +1,11 @@
 package com.example.specialmps
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -36,9 +36,13 @@ class LoginActivity : AppCompatActivity() {
                             if(user.pw==pw){
                                 Toast.makeText(this@LoginActivity,user.name+"님이 로그인하셨습니다.",Toast.LENGTH_SHORT).show()
                                 //* 메뉴화면 생기면 해당 액티비티로 넘어가기/////////////////////////////////////////////////////////////
+
                                 //val i=Intent(this@LoginActivity,Chatting::class.java)
                                 //i.putExtra("userID",id)
-                                val i=Intent(this@LoginActivity,RecordedChat::class.java)
+                                //val i=Intent(this@LoginActivity,RecordedChat::class.java)
+
+                                val i=Intent(this@LoginActivity,MenuActivity::class.java)
+
                                 i.putExtra("userID",id)
                                 i.putExtra("resultID","2022-07-17")
                                 startActivity(i)
@@ -66,7 +70,6 @@ class LoginActivity : AppCompatActivity() {
             //회원가입 창
             val i=Intent(this,Signup::class.java)
             startActivity(i)
-            finish()
         }
 
         login_btn.setOnClickListener {

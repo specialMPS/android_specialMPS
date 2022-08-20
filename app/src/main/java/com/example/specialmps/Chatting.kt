@@ -1,5 +1,7 @@
 package com.example.specialmps
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -91,6 +93,17 @@ class Chatting : AppCompatActivity() {
         
         //대화종료 후 messageList를 firebase에 추가-->보류
         //saveDB(messageList)
+
+        //종료 버튼을 눌렀을 때 다이얼로그 생성
+        exitbtn.setOnClickListener {
+            val builder=AlertDialog.Builder(this)
+            builder.setMessage("대화를 종료하시겠습니까?")
+                .setPositiveButton("결과보기",object :DialogInterface.OnClickListener{
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                        //검사결과 페이지로 넘어가기
+                    }
+                }).setNegativeButton("취소",null)
+        }
     }
 
 //    override fun onSupportNavigateUp(): Boolean {
@@ -105,7 +118,6 @@ class Chatting : AppCompatActivity() {
                 finish() //현재 액티비티 종료
                 return true
             }
-
         }
         return super.onOptionsItemSelected(item)
     }
@@ -127,4 +139,6 @@ class Chatting : AppCompatActivity() {
             resultid.child("chat message").setValue(i)
         }
     }
+
+
 }

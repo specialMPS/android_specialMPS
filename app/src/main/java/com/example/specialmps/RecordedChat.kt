@@ -1,14 +1,20 @@
 package com.example.specialmps
 
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -30,6 +36,8 @@ class RecordedChat : AppCompatActivity() {
         if(intent.hasExtra("userID")){
             user= intent.getStringExtra("userID").toString()
         }
+
+        Log.i("recorded chat date ",result_ID)
         if(intent.hasExtra("resultID")){
             result_ID=intent.getStringExtra("resultID").toString()
         }
@@ -44,6 +52,23 @@ class RecordedChat : AppCompatActivity() {
         val toolbar_title:TextView=findViewById(R.id.toolbar_title)
         toolbar_title.text=result_ID
 
+        showRecord()
+    }
+
+    //toolbar에서 뒤로가기 눌렀을때 적용
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId==android.R.id.home){
+            //메뉴 액티비티로 이동
+            val i=Intent(this@RecordedChat, MenuActivity::class.java) ///메뉴 액티비티로 되돌어감
+            i.putExtra("userID",user)
+            startActivity(i)
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun showRecord(){
         var mMessageRecycler: RecyclerView =findViewById(R.id.record_recycler_chat)
         mMessageRecycler.layoutManager= LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
         mMessageAdapter=MessageListAdapter(this,messageList)
@@ -68,17 +93,5 @@ class RecordedChat : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
         })
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId==android.R.id.home){
-            //메뉴 액티비티로 이동
-            val i=Intent(this@RecordedChat, Chatting::class.java) ///이동되는 액티비티 수정
-            i.putExtra("userID",user)
-            startActivity(i)
-            finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 }

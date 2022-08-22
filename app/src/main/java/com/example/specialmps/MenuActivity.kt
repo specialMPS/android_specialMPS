@@ -19,12 +19,16 @@ class MenuActivity : AppCompatActivity() {
     val mDatabase= FirebaseDatabase.getInstance()
     var result_ID:String=""
     lateinit var DateList:ArrayAdapter<String>
+    var chat_date=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
         if(intent.hasExtra("userID")){
             userid = intent.getStringExtra("userID").toString()
+        }
+        if(intent.hasExtra("chat_not_exit_date")){
+            chat_date=intent.getStringExtra("chat_not_exit_date").toString()
         }
         DateList=callDatelist()
         //Log.i("DateList",DateList[0])
@@ -39,6 +43,10 @@ class MenuActivity : AppCompatActivity() {
         consultbtn.setOnClickListener {
             var i = Intent(this, Chatting::class.java)
             i.putExtra("userID", userid)
+            if(chat_date!=""){
+                i.putExtra("chat_not_exit_date",chat_date)
+                Log.i("chat_not_exit_date",chat_date)
+            }
             startActivity(i)
         }
 
@@ -58,6 +66,7 @@ class MenuActivity : AppCompatActivity() {
         mDatabase.getReference("Record").child(userid).addValueEventListener(object :
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                madapter.clear()
                 if(snapshot.exists()){
                     for(date in snapshot.children){
                         val item=date.key.toString()

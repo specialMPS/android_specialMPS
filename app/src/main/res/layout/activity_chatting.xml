@@ -87,14 +87,4 @@
             android:textColor="@color/colorPrimary"/>
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/exitbtn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/circle_btn"
-        android:text="종료"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="350dp"
-        tools:layout_editor_absoluteY="69dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

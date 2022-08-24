@@ -46,24 +46,25 @@ class Chatting : AppCompatActivity() {
             user= intent.getStringExtra("userID").toString()
             Log.i("userid",user)
         }
-//        if(intent.hasExtra("chat_not_exit_date")){
-//            chat_date=intent.getStringExtra("chat_not_exit_date").toString()
-//            Log.i("chat_not_exit_date",chat_date)
-//        }
+        if(intent.hasExtra("chat_not_exit_date")){
+            chat_date=intent.getStringExtra("chat_not_exit_date").toString()
+            Log.i("chat_not_exit_date",chat_date)
+        }
         var currentDate=""
-        if(chat_date!=""){ //결과를 보지않고 종료된 가장 최근 채팅이 있다면
-            val builder=AlertDialog.Builder(this)
-            builder.setMessage("결과를 보지 않고 종료된 채팅이 있습니다.\n이어서 하시겠습니까?")
-                .setPositiveButton("예",object :DialogInterface.OnClickListener{
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-                        //최근 채팅 데이터 불러오기
-                        call_previous_chat()
-                    }
-                }).setNegativeButton("아니오",object :DialogInterface.OnClickListener{
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-                        new_chat_start(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE))
-                    }
-                }).show()
+        if(chat_date!=""){ //결과를 보지않고 종료된 가장 최근 채팅이 있다면 무조건 채팅 이어서 하게끔
+            call_previous_chat()
+//            val builder=AlertDialog.Builder(this)
+//            builder.setMessage("결과를 보지 않고 종료된 채팅이 있습니다.\n이어서 하시겠습니까?")
+//                .setPositiveButton("예",object :DialogInterface.OnClickListener{
+//                    override fun onClick(p0: DialogInterface?, p1: Int) {
+//                        //최근 채팅 데이터 불러오기
+//                        call_previous_chat()
+//                    }
+//                }).setNegativeButton("아니오",object :DialogInterface.OnClickListener{
+//                    override fun onClick(p0: DialogInterface?, p1: Int) {
+//                        new_chat_start(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE))
+//                    }
+//                }).show()
         }
 
         //주제 데이터 읽어오기
@@ -73,7 +74,7 @@ class Chatting : AppCompatActivity() {
         }
         scan.close()
 
-        //현재날짜 또는
+        //현재날짜 또는 마지막 채팅 날짜 (DB)
         if(chat_date==""){
             currentDate=LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)
             new_chat_start(currentDate)

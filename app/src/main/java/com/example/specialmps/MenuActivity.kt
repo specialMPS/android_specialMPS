@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_menu.*
+import java.util.*
 
 class MenuActivity : AppCompatActivity() {
 
@@ -19,7 +20,7 @@ class MenuActivity : AppCompatActivity() {
     val mDatabase= FirebaseDatabase.getInstance()
     var result_ID:String=""
     lateinit var DateList:ArrayAdapter<String>
-    var chat_date=""
+    var chatting:String=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,11 +28,10 @@ class MenuActivity : AppCompatActivity() {
         if(intent.hasExtra("userID")){
             userid = intent.getStringExtra("userID").toString()
         }
-        if(intent.hasExtra("chat_not_exit_date")){
-            chat_date=intent.getStringExtra("chat_not_exit_date").toString()
-        }
+
         DateList=callDatelist()
         //Log.i("DateList",DateList[0])
+        callresultlist()
         init()
     }
 
@@ -43,9 +43,9 @@ class MenuActivity : AppCompatActivity() {
         consultbtn.setOnClickListener {
             var i = Intent(this, Chatting::class.java)
             i.putExtra("userID", userid)
-            if(chat_date!=""){
-                i.putExtra("chat_not_exit_date",chat_date)
-                Log.i("chat_not_exit_date",chat_date)
+            if(chatting!=""){
+                i.putExtra("chat_not_exit_date",chatting)
+                Log.i("chat_not_exit_date",chatting)
             }
             startActivity(i)
         }
@@ -80,6 +80,26 @@ class MenuActivity : AppCompatActivity() {
             }
         })
         return madapter
+    }
+
+    fun callresultlist(){
+        //결과테이블의 개수와 채팅 테이블의 개수가 맞지 않을 때(개수 차이는 무조건 1이라고 판단)
+        //채팅 테이블의 마지막 채팅 날짜로 연이어 채팅 하게끔 한다.
+        mDatabase.getReference("Result").child(userid).addValueEventListener(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    if(snapshot.childrenCount.toInt()!=DateList.count){
+                        chatting=
+                            DateList.getItem(DateList.count-1).toString() //결과 추가 안된 채팅 날짜 설정
+                        Log.i("resultid추가",result_ID)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     fun selectDay(items:ArrayAdapter<String>){

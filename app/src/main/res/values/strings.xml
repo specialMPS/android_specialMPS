@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">specialMPS</string>
+    <string name="surprise">0.04</string>
+    <string name="fear">0.09</string>
+    <string name="distressed">0.13</string>
+    <string name="angry">0.11</string>
+    <string name="miserable">0.16</string>
+    <string name="gloomy">0.2</string>
+    <string name="bored">0.18</string>
+    <string name="tired">0.07</string>
+    <string name="neutral">0.2</string>
 </resources>

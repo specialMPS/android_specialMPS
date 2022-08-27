@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/card_chat_message_other"
-        app:cardBackgroundColor="#E0FFDB"
+        app:cardBackgroundColor="#e9edc9"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"

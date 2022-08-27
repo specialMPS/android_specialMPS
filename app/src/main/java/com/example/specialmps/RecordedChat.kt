@@ -47,7 +47,7 @@ class RecordedChat : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowTitleEnabled(false) //toolbar에 title 보이지 않도록 설정
-        supportActionBar?.elevation=0f //toolbar 구분선 없애기
+        //supportActionBar?.elevation=0f //toolbar 구분선 없애기
         //toolbar에 대화 날짜 보여주기(title)
         val toolbar_title:TextView=findViewById(R.id.toolbar_title)
         toolbar_title.text=result_ID

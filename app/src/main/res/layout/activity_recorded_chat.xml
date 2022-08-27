@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".RecordedChat">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -19,6 +20,8 @@
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/toolbar_channel"
             android:theme="@style/Widget.AppCompat.Toolbar"
+            android:background="#FFFFFF"
+            app:elevation="0dp"
             app:popupTheme="@style/Theme.AppCompat.Light">
 
             <TextView
@@ -28,7 +31,7 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:id="@+id/toolbar_title"
-                android:textColor="#FFFFFF"
+                android:textColor="#d4a373"
                 android:textSize="20sp"/>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -39,6 +42,7 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="16dp"
         app:layout_constrainedHeight="true"
+        android:background="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/record_chat_ballon"
         app:layout_constraintBottom_toBottomOf="@+id/layout_group_chat"/>
 
@@ -55,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:id="@+id/record_view"
-        android:background="#86E57F"
+        android:background="#ccd5ae"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

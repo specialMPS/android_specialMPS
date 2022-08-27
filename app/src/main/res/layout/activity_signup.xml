@@ -13,9 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="20dp"
-        android:text="SignUp"
+        android:text="회원가입"
         android:textAlignment="center"
-        android:textColor="#B4031D6A"
+        android:textColor="#d4a373"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -97,6 +97,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
+            android:background="@drawable/btn_radius"
+            android:textColor="#FFFFFF"
             android:text="등록" />
 
         <Button
@@ -105,6 +107,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
+            android:background="@drawable/btn_radius"
+            android:textColor="#FFFFFF"
             android:text="취소" />
     </LinearLayout>
 

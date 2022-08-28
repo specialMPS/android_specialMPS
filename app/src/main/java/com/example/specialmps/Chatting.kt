@@ -131,7 +131,7 @@ class Chatting : AppCompatActivity() {
                             finish() //현재 액티비티 종료
                         }
                     }).setNegativeButton("취소",null).show()
-                finish() //현재 액티비티 종료
+                //finish() //현재 액티비티 종료
                 return true
             }
             R.id.toolbar_exit -> {

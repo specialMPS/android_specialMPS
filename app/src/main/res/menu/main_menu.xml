@@ -2,16 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="counseling"
+            android:id="@+id/counseling"
             android:title="상담"
-
             />
         <item
-            android:id="record"
+            android:id="@+id/record"
             android:title="이전 상담 조회"
             />
         <item
-            android:id="hospital"
+            android:id="@+id/hospital"
             android:title="병원 조회"/>
     </group>
 </menu>

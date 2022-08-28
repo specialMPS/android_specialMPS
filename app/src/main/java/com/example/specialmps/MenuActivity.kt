@@ -4,9 +4,14 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -35,20 +40,36 @@ class MenuActivity : AppCompatActivity() {
 
     fun init(){
 
-        pastbtn.setOnClickListener {
-            selectDay(DateList)
+        menu.setOnClickListener {
+            //메뉴 버튼 누르면 세부 메뉴 보여주기 --> 다른 곳을 눌렀을 때 화면 꺼지는 것도 구현
+
+            val drawerLayout=findViewById<DrawerLayout>(R.id.draw_layout)
+            drawerLayout.openDrawer(GravityCompat.START)
+
+            val id=findViewById<TextView>(R.id.userID)
+            id.setText(userid+" 님")
+
+            val navi=findViewById<NavigationView>(R.id.navigation)
+            navi.setNavigationItemSelectedListener(object :NavigationView.OnNavigationItemSelectedListener{
+                override fun onNavigationItemSelected(item: MenuItem): Boolean {
+                    item.setChecked(true)
+                    drawerLayout.closeDrawers()
+                    val selectedMenu=item.itemId
+                    when(selectedMenu){
+                        R.id.record->{
+                            selectDay(DateList)
+                        }
+                        R.id.counseling->{
+                            showChattingPage()
+                        }
+                        R.id.hospital->{
+
+                        }
+                    }
+                    return true
+                }
+            })
         }
-        consultbtn.setOnClickListener {
-            var i = Intent(this, Chatting::class.java)
-            i.putExtra("userID", userid)
-            startActivity(i)
-        }
-
-        hospitalbtn.setOnClickListener {
-
-        }
-
-
     }
 
     fun callDatelist(): ArrayAdapter<String> {
@@ -83,15 +104,21 @@ class MenuActivity : AppCompatActivity() {
         }).setPositiveButton("완료",object : DialogInterface.OnClickListener{
             override fun onClick(p0: DialogInterface?, p1: Int) {
                 result_ID=selectedItem
-                showPage()
+                showRecordPage()
             }
         }).setNegativeButton("취소", null).show()
     }
 
-    fun showPage(){
+    fun showRecordPage(){
         var i = Intent(this, RecordedChat::class.java)
         i.putExtra("userID", userid)
         i.putExtra("resultID",result_ID)
+        startActivity(i)
+    }
+
+    fun showChattingPage(){
+        var i = Intent(this, Chatting::class.java)
+        i.putExtra("userID", userid)
         startActivity(i)
     }
 }

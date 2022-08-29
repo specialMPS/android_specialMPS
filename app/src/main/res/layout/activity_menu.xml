@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <ImageButton
             android:id="@+id/menu"
@@ -21,8 +21,23 @@
             android:padding="10dp"
             android:src="@drawable/ic_baseline_menu_24" />
 
-    </LinearLayout>
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="50dp"
+            android:layout_marginHorizontal="5dp"
+            app:mcv_selectionColor="#faedcd"
+            android:id="@+id/calender"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_radius"
+            android:text="상담하기"
+            android:id="@+id/newchat"
+            android:textColor="#ffffff"/>
+    </LinearLayout>
 
         <com.google.android.material.navigation.NavigationView
             android:layout_width="wrap_content"

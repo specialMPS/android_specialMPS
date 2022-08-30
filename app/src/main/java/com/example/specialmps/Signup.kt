@@ -72,7 +72,7 @@ class Signup : AppCompatActivity() {
 
 
     fun register(userinfo : UserInfo, uid : String){
-        rdatabase.child(uid).setValue(userinfo)
+        rdatabase.child("User").child(uid).setValue(userinfo)
         var i = Intent()
         i.putExtra("success", true)
         setResult(Activity.RESULT_OK, i)

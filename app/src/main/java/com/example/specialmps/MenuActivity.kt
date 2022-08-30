@@ -32,6 +32,9 @@ class MenuActivity : AppCompatActivity() {
 
         hospitalbtn.setOnClickListener {
 
+            var i = Intent(this, HospitalActivity::class.java)
+            i.putExtra("userID", userid)
+            startActivity(i)
         }
         mypagebtn.setOnClickListener {
 

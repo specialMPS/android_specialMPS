@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font
+        android:font="@font/medium"
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        app:font="@font/medium"
+        app:fontStyle="normal"
+        app:fontWeight="400"
+        />
+    <font
+        android:font="@font/bold"
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        app:font="@font/bold"
+        app:fontStyle="normal"
+        app:fontWeight="400"/>
+    <font
+        android:font="@font/light"
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        app:font="@font/light"
+        app:fontStyle="normal"
+        app:fontWeight="400"/>
+
+</font-family>

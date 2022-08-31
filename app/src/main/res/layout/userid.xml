@@ -2,19 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#d4a373"
+    android:orientation="horizontal">
 
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/maincharacter"
+        android:background="@drawable/maincharacter"
+        android:layout_marginLeft="40dp"
+
+        android:layout_marginVertical="40dp"
+        />
 
     <TextView
         android:id="@+id/userID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="#d4a373"
+        android:fontFamily="@font/medium"
         android:textColor="#ffffff"
         android:textAlignment="center"
         android:text="noinfo"
-        android:padding="30dp"
+        android:layout_marginVertical="50dp"
+        android:layout_marginRight="30dp"
+
         android:textSize="30sp"
         />
 </LinearLayout>

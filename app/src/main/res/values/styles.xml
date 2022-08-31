@@ -7,6 +7,11 @@
         <item name="colorPrimaryDark">#d4a373</item>
         <item name="colorAccent">#d4a373</item>
         <item name="android:actionBarDivider">@android:color/transparent</item>
+
+        <item name="android:textViewStyle">@style/CustomTextViewFontStyle</item>
+        <item name="android:editTextStyle">@style/CustomEditTextFontStyle</item>
+        <item name="android:buttonStyle">@style/CustomButtonFontStyle</item>
+        <item name="android:radioButtonStyle">@style/CustomRadioButtonFontStyle</item>
     </style>
 
 </resources>

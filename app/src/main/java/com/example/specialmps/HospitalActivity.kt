@@ -28,6 +28,7 @@ import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
 import org.jsoup.select.Elements
 import java.net.URL
+import java.net.URLEncoder
 
 class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
@@ -37,11 +38,13 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
     lateinit var googlemap: GoogleMap
 
+    var searchKeyword : String = ""
     var loc = LatLng(37.554752, 126.970631)
 
     val key1 = "b17ee37aae43497d8c94690258a08512"
     val key2 = "8072387393bf4a9f969c353ed2ad845b"
 
+    val hospitalSearchUrl = "https://openapi.gg.go.kr/MindHealthPromotionCenter?KEY="+key1+"&Type=xml&pSize=200&"
     val hospitalURL = "https://openapi.gg.go.kr/MindHealthPromotionCenter?KEY="+key1+"&Type=xml&pSize=200&pIndex="
     val hospitalURL2 = " https://openapi.gg.go.kr/Ggmindmedinst"
 
@@ -72,8 +75,109 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 100)
         }
 
+        search_map_button.setOnClickListener {
+
+            searchKeyword = search_map.text.toString()
+            if(searchKeyword == ""){
+                Toast.makeText(this, "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
+                arr.clear()
+                initHospital()
+                return@setOnClickListener
+            }
+            search_map_button.isClickable = false
+            Toast.makeText(this, "잠시 기다려주세요!", Toast.LENGTH_SHORT).show()
+            val check = searchKeyword[searchKeyword.length-1]
+            if( check == '시' || check == '군'){//도시이름인 경우
+                startTask(true)
+                Log.i("도시", "도시도시")
+            }
+            else{//병원 이름인 경우
+                startTask(false)
+            }
+        }
     }
 
+    fun startTask(cityCheck:Boolean){
+
+        search_map_button.isClickable = true
+
+        CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch{
+                var argUrl = hospitalSearchUrl
+                if(cityCheck){//도시명 검색한 경우
+                    val searchEncode = URLEncoder.encode(searchKeyword, "utf-8")
+                    argUrl = argUrl.plus("SIGUN_NM=").plus(searchEncode).plus("&pIndex=")
+
+                }
+                else{ //병원 이름 검색한 경우
+                    argUrl = argUrl.plus("pIndex=")
+
+                }
+                Log.i("url 확인", argUrl)
+                for( pIndex in 1..30){
+
+                    var curURL = argUrl.plus(pIndex.toString())
+                    val url = URL(curURL)
+                    val doc = Jsoup.connect(url.toString()).parser(Parser.xmlParser()).get()
+
+                    var hospitals: Elements
+                    hospitals = doc.select("row")
+                    if(hospitals.size <= 0){
+                        break;
+                    }
+                    Log.i("apicheck", hospitals.toString())
+                    for (hospital in hospitals) {
+                        val available = hospital.select("BSN_STATE_NM").text()
+
+                        Log.i("apicheck", "병원정보")
+                        val latitude= hospital.select("REFINE_WGS84_LAT").text()
+                        val longitude = hospital.select("REFINE_WGS84_LOGT").text()
+                        val hosName = hospital.select("CENTER_NM").text()
+                        val hosPhone = hospital.select("TELNO").text()
+                        val hosAddress = hospital.select("REFINE_ROADNM_ADDR").text()
+//                        if(latitude == null || longitude == null){
+//                            continue
+//                        }
+                        if(!cityCheck){//병원 검색한 경우
+                            if(!hosName.contains(searchKeyword, true)){
+                                continue
+                            }
+                        }
+                        var l : LatLng
+                        l = LatLng(latitude.toDouble(), longitude.toDouble())
+                        Log.i("hospitalcheck", hospital.select("BIZPLC_NM").text().toString())
+                        arr.add(HospitalInfo(hosName, hosPhone, l, hosAddress))
+                        /*
+                        try{
+                            l = LatLng(latitude.toDouble(), longitude.toDouble())
+                            Log.i("hospitalcheck", hospital.select("BIZPLC_NM").text().toString())
+                            arr.add(HospitalInfo(hosName, hosPhone, l, hosAddress))
+                        }catch ( e : NumberFormatException){
+                            continue
+                        }
+
+                         */
+
+                    }
+                } //arr 배열에 정보 추가 완료
+
+            }.join()
+            Log.i("hospital search num", arr.size.toString())
+
+
+            googlemap.clear()
+            for(hospital in arr){
+                val position = hospital.hLatlng
+                val options = MarkerOptions()
+                options.position(position)
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                var marker = googlemap.addMarker(options)
+                marker?.tag = hospital
+            }
+
+        }
+
+    }
     fun stopLocationUpdates(){
         fusedLocationClient?.removeLocationUpdates(locationCallback!!)
     }

@@ -51,9 +51,11 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }else{
                             Toast.makeText(this@LoginActivity,"없는 계정이거나 비밀번호가 맞지 않습니다.",Toast.LENGTH_SHORT).show()
+
                         }
                     }else{
                         Toast.makeText(this@LoginActivity,"없는 계정이거나 비밀번호가 맞지 않습니다.",Toast.LENGTH_SHORT).show()
+
                     }
                 }
             }

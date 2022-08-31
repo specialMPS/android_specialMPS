@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
@@ -25,12 +24,8 @@ import com.google.firebase.database.ValueEventListener
 import com.prolificinteractive.materialcalendarview.*
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import kotlinx.android.synthetic.main.activity_menu.*
-import org.threeten.bp.DayOfWeek
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Calendar.SUNDAY
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 class MenuActivity : AppCompatActivity() {
 
@@ -87,7 +82,7 @@ class MenuActivity : AppCompatActivity() {
                         }
                         R.id.hospital->{
                             //병원검색 페이지로 이동
-
+                            showHospitalPage()
                         }
                     }
                     return true
@@ -137,6 +132,10 @@ class MenuActivity : AppCompatActivity() {
                 showRecordPage()
             }
         }).setNegativeButton("취소", null).show()
+    }
+    fun showHospitalPage(){
+        var i = Intent(this, HospitalActivity::class.java)
+        startActivity(i)
     }
 
     fun showRecordPage(){

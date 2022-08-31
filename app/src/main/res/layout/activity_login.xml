@@ -7,13 +7,22 @@
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="심신안정"
+        android:id="@+id/maintext"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:textColor="#d4a373"
+        android:textSize="55sp" />
 
     <EditText
         android:id="@+id/id_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="60sp"
-        android:layout_marginTop="250sp"
+        android:layout_marginTop="100sp"
         android:layout_marginBottom="10sp"
         android:inputType="textPersonName"
         android:outlineAmbientShadowColor="#84a98c"

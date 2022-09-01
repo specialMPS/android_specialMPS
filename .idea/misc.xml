@@ -3,14 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/btn_radius.xml" value="0.1835" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/chatting_tool.xml" value="0.1" />
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/font/fontcustom.xml" value="0.1" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_chatting.xml" value="0.22" />
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_login.xml" value="0.16666666666666666" />
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_main.xml" value="0.16354166666666667" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_login.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_menu.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_recorded_chat.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_signup.xml" value="0.22" />
@@ -18,11 +14,14 @@
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/chat_ballon_etc.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/circle_btn.xml" value="0.15989583333333332" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/main_menu.xml" value="0.16458333333333333" />
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/userid.xml" value="0.30625" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/userid.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/menu/chatting_tool.xml" value="0.17916666666666667" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/menu/main_menu.xml" value="0.1" />
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.156" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.169" />
+        <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/drawable/btn_radius.xml" value="0.259" />
+        <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/drawable/button_round.xml" value="0.258" />
+        <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/drawable/ic_launcher_background.xml" value="0.259" />
+        <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/drawable/round_corner.xml" value="0.258" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/layout/activity_hospital.xml" value="0.264" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/layout/activity_menu.xml" value="0.2558876811594203" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/layout/activity_signup.xml" value="0.25364583333333335" />

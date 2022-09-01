@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:backgroundTint="#EFDFAE"
     tools:context=".HospitalActivity">
 
@@ -16,40 +17,71 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/round_corner"
         android:backgroundTint="@android:color/white"
         android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/mapActivity_backbtn"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:backgroundTint="@android:color/white"
+            app:srcCompat="?attr/actionModeCloseDrawable" />
 
         <EditText
             android:id="@+id/search_map"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:background="@android:color/white"
             android:backgroundTint="@android:color/white"
             android:hint="시/군 또는 병원이름을 입력해 주세요"
             android:lines="1"
+            android:paddingLeft="5dp"
             android:singleLine="true"
             tools:ignore="TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/search_map_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#e9edc9"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:foreground="@android:drawable/ic_menu_search"
+            android:textColor="@android:color/black"
             tools:ignore="SpeakableTextPresentCheck" />
 
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="75.5dp"
+        android:layout_marginRight="16.5dp"
+        app:srcCompat="@drawable/button_round" />
+
+    <ImageButton
+        android:id="@+id/refresh_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/refresh_icon"
+        android:elevation="8dp"
+        app:srcCompat="@drawable/refresh_icon" />
+
     <LinearLayout
         android:id="@+id/map_linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
         android:orientation="vertical"
-        tools:visibility="gone"
-        android:layout_marginBottom="30dp">
+        android:visibility="gone">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -65,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="30dp"
-                android:layout_marginVertical="10dp"
+                android:layout_marginVertical="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -73,6 +105,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
                     android:textColor="@android:color/black"
                     android:textSize="18dp"
                     android:textStyle="bold" />
@@ -83,6 +116,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:layout_marginBottom="5dp"
                     android:textColor="#727272"
                     android:textSize="11dp" />
 

@@ -1,11 +1,15 @@
 package com.example.specialmps
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -50,12 +54,18 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
     var arr : ArrayList<HospitalInfo> = ArrayList() //Marker에 넣을 병원 정보
 
+    companion object{
+        private val markerIconSize = 100
+    }
+
+    lateinit var markerIcon : Bitmap
     //private val hospitalManager by lazy { HospitalManager()} // 나중에 초기화 선언
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hospital)
         map_linearlayout.visibility = View.GONE
+        markerIcon = BitmapUtils.resizeMapIcons(this, R.drawable.marker_icon, markerIconSize, markerIconSize)
         init()
     }
     fun init(){
@@ -76,12 +86,14 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         }
 
         search_map_button.setOnClickListener {
+            softkeyboardhide() //키보드 내리기
+            map_linearlayout.visibility = View.GONE //마커 띄워져 있는 경우 없애기
 
             searchKeyword = search_map.text.toString()
             if(searchKeyword == ""){
                 Toast.makeText(this, "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
-                arr.clear()
-                initHospital()
+                //arr.clear()
+                //initHospital()
                 return@setOnClickListener
             }
             search_map_button.isClickable = false
@@ -94,9 +106,30 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             else{//병원 이름인 경우
                 startTask(false)
             }
+            search_map.text = null
+        }
+        mapActivity_backbtn.setOnClickListener {
+            finish()
+        }
+
+        refresh_button.setOnClickListener {
+            arr.clear()
+            initHospital()
         }
     }
 
+
+    fun softkeyboardhide(){//입력창 focus되었을 때 나타나는 키보드 다시 내리는 함수
+        val im = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        im.hideSoftInputFromWindow(search_map.windowToken, 0)
+    }
+
+    object BitmapUtils{//커스텀 마커이미지를 비트맵으로 변경
+        fun resizeMapIcons(context: Context, iconId: Int, width: Int, height: Int):Bitmap{
+            val imageBitmap = BitmapFactory.decodeResource(context.resources, iconId)
+            return Bitmap.createScaledBitmap(imageBitmap, width, height, false)
+        }
+    }
     fun startTask(cityCheck:Boolean){
 
         search_map_button.isClickable = true
@@ -107,18 +140,18 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                 if(cityCheck){//도시명 검색한 경우
                     val searchEncode = URLEncoder.encode(searchKeyword, "utf-8")
                     argUrl = argUrl.plus("SIGUN_NM=").plus(searchEncode).plus("&pIndex=")
-
                 }
                 else{ //병원 이름 검색한 경우
                     argUrl = argUrl.plus("pIndex=")
-
                 }
+                arr.clear()
                 Log.i("url 확인", argUrl)
                 for( pIndex in 1..30){
 
                     var curURL = argUrl.plus(pIndex.toString())
                     val url = URL(curURL)
                     val doc = Jsoup.connect(url.toString()).parser(Parser.xmlParser()).get()
+
 
                     var hospitals: Elements
                     hospitals = doc.select("row")
@@ -165,12 +198,15 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             Log.i("hospital search num", arr.size.toString())
 
 
+
             googlemap.clear()
+
+
             for(hospital in arr){
                 val position = hospital.hLatlng
                 val options = MarkerOptions()
                 options.position(position)
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                options.icon(BitmapDescriptorFactory.fromBitmap(markerIcon))
                 var marker = googlemap.addMarker(options)
                 marker?.tag = hospital
             }
@@ -263,6 +299,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             }
         }
     }
+
     private fun initMap() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync{
@@ -272,7 +309,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             googlemap.setMaxZoomPreference(18.0f)
             val options = MarkerOptions()
             options.position(loc)
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            options.icon(BitmapDescriptorFactory.fromBitmap(markerIcon))
 //            options.title("역")
 //            options.snippet("서울역")
 //            val mk1 = googlemap.addMarker(options)
@@ -286,9 +323,8 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
     fun initMapListener(){
         googlemap.setOnMapClickListener {
-            //googlemap.clear()//마커정보 다 지워
+            //googlemap.clear()//마커정보 전부 삭제
             map_linearlayout.visibility = View.GONE
-
         }
         googlemap.setOnMarkerClickListener(this)
     }
@@ -367,7 +403,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                 val position = hospital.hLatlng
                 val options = MarkerOptions()
                 options.position(position)
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                options.icon(BitmapDescriptorFactory.fromBitmap(markerIcon))
                 var marker = googlemap.addMarker(options)
                 marker?.tag = hospital
             }
@@ -409,68 +445,6 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         }
 
     }
-
-     */
-    /*
-    class MyAsyncTask(asyncResponse: AsyncResponse): AsyncTask<String, Unit, Unit>(){
-
-        var response: AsyncResponse? = asyncResponse
-
-        var arr : ArrayList<HospitalInfo> = ArrayList()
-
-        interface AsyncResponse {
-            fun readyToSetHospital(arr:ArrayList<HospitalInfo>)
-        }
-
-        override fun doInBackground(vararg params: String?) {
-            //var pIndex = 1
-            for( pIndex in 1..30){
-                val argUrl = params[0].toString()
-                var curURL = argUrl.plus(pIndex.toString())
-                val url = URL(curURL)
-                val doc = Jsoup.connect(url.toString()).parser(Parser.xmlParser()).get()
-
-                var hospitals: Elements
-                hospitals = doc.select("row")
-                if(hospitals.size <= 0){
-                    break;
-                }
-                for (hospital in hospitals) {
-                    val available = hospital.select("BSN_STATE_NM").text()
-
-                    if(available.trim() == "정상"){
-                        val latitude= hospital.select("REFINE_WGS84_LAT").text()
-                        val longitude = hospital.select("REFINE_WGS84_LOGT").text()
-                        val hosName = hospital.select("CENTER_NM").text()
-                        val hosPhone = hospital.select("TELNO").text()
-                        val hosAddress = hospital.select("REFINE_ROADNM_ADDR").text()
-//                        if(latitude == null || longitude == null){
-//                            continue
-//                        }
-                        var l : LatLng
-                        try{
-                            l = LatLng(latitude.toDouble(), longitude.toDouble())
-                            //Log.i("hospital", hospital.select("BIZPLC_NM").text().toString())
-                            arr.add(HospitalInfo(hosName, hosPhone, l, hosAddress))
-                        }catch ( e : NumberFormatException){
-                            continue
-                        }
-                    }
-
-                }
-            }
-
-
-        }
-
-
-        override fun onPostExecute(result: Unit?) {
-            super.onPostExecute(result)
-            response!!.readyToSetHospital(arr)
-        }
-
-    }
-
 
      */
 

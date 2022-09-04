@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -43,7 +44,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
     lateinit var googlemap: GoogleMap
 
     var searchKeyword : String = ""
-    var loc = LatLng(37.554752, 126.970631)
+    var loc = LatLng(37.5552002, 126.9706291)
 
     val key1 = "b17ee37aae43497d8c94690258a08512"
     val key2 = "8072387393bf4a9f969c353ed2ad845b"
@@ -130,6 +131,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             return Bitmap.createScaledBitmap(imageBitmap, width, height, false)
         }
     }
+
     fun startTask(cityCheck:Boolean){
 
         search_map_button.isClickable = true
@@ -214,6 +216,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         }
 
     }
+
     fun stopLocationUpdates(){
         fusedLocationClient?.removeLocationUpdates(locationCallback!!)
     }
@@ -230,9 +233,17 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             //위치정보 동의 했는지 확인
             return
         }
-        fusedLocationClient?.lastLocation?.addOnSuccessListener {
-            loc = LatLng(it.latitude, it.longitude)
-            Log.i("현재위치", it.latitude.toString() +", "+it.longitude.toString())
+        //서울역 37.5552002, 126.9706291
+
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { location : Location? ->
+            if (location != null){
+                loc = LatLng(location.latitude, location.longitude)
+                Log.i("현재위치", location.latitude.toString() +", "+location.longitude.toString())
+            }
+            else{//사용자의 기기에서 현재위치를 받을 수 없는 경우
+                loc = LatLng(37.5552002, 126.9706291)
+            }
+
         }
     }
 
@@ -251,7 +262,10 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
                 locationResult?:return
                 for(location in locationResult.locations){
-                    loc = LatLng(location.latitude, location.longitude)
+                    if(location != null){
+                        loc = LatLng(location.latitude, location.longitude)
+                    }
+
                     googlemap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f))
                 }
             }

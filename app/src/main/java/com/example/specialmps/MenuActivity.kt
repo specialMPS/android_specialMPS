@@ -26,6 +26,7 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import kotlinx.android.synthetic.main.activity_menu.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashSet
 
 class MenuActivity : AppCompatActivity() {
 
@@ -33,7 +34,7 @@ class MenuActivity : AppCompatActivity() {
     val mDatabase= FirebaseDatabase.getInstance()
     var result_ID:String=""
     lateinit var DateList:ArrayAdapter<String>
-    lateinit var CalendarList:ArrayList<CalendarDay>
+    lateinit var CalendarList:HashSet<CalendarDay>
     var DateListString=ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,6 +134,7 @@ class MenuActivity : AppCompatActivity() {
             }
         }).setNegativeButton("취소", null).show()
     }
+
     fun showHospitalPage(){
         var i = Intent(this, HospitalActivity::class.java)
         startActivity(i)
@@ -151,9 +153,9 @@ class MenuActivity : AppCompatActivity() {
         startActivity(i)
     }
 
-    fun getDatesArraylist():ArrayList<CalendarDay>{
+    fun getDatesArraylist():HashSet<CalendarDay>{
 
-        var dateslist=ArrayList<CalendarDay>()
+        var dateslist=HashSet<CalendarDay>()
         mDatabase.getReference("Record").child(userid).addValueEventListener(object : //Result 테이블로 수정
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -161,6 +163,7 @@ class MenuActivity : AppCompatActivity() {
                     for(date in snapshot.children){
                         val item=date.key.toString()
                         val datetime=item.split(" ")
+                        Log.i("datetime[0]",datetime[0])
                         dateslist.add(dateTocalendar(datetime[0]))
                         DateListString.add(item)
                     }
@@ -175,7 +178,6 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun dateTocalendar(date:String):CalendarDay{
-
 
         val cal=Calendar.getInstance()
         val format=SimpleDateFormat("yyyy-MM-dd")
@@ -229,16 +231,20 @@ private class TodayDecorator:DayViewDecorator{
     }
 }
 
-private class EventDecorator(_dates:ArrayList<CalendarDay>):DayViewDecorator{
-    var dates:ArrayList<CalendarDay> = ArrayList(_dates)
+private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{
+    val dates:HashSet<CalendarDay>
+
+    init {
+        this.dates=HashSet(dates)
+    }
 
     override fun shouldDecorate(day: CalendarDay?): Boolean {
         return dates.contains(day)
     }
 
     override fun decorate(view: DayViewFacade?) {
-//        view?.addSpan(DotSpan(4F,Color.parseColor("#d4a373")))
-        view?.addSpan(DotSpan(4F,Color.YELLOW))
+        view?.addSpan(DotSpan(5F,Color.parseColor("#d4a373")))
+        //view?.addSpan(DotSpan(3F,Color.BLUE))
 
     }
 }

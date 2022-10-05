@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.AsyncTask
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
@@ -245,6 +246,5 @@ private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{
     override fun decorate(view: DayViewFacade?) {
         view?.addSpan(DotSpan(5F,Color.parseColor("#d4a373")))
         //view?.addSpan(DotSpan(3F,Color.BLUE))
-
     }
 }

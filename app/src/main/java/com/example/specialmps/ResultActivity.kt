@@ -1,10 +1,16 @@
 package com.example.specialmps
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
@@ -30,6 +36,13 @@ class ResultActivity : AppCompatActivity() {
         if(intent.hasExtra("userID")){
             userid = intent.getStringExtra("userID").toString()
         }
+
+        //뒤로가기 버튼
+        val toolbar: Toolbar =findViewById(R.id.toolbar_channel)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true) //마우스 왼쪽 버튼 사용
+        supportActionBar!!.setDisplayShowTitleEnabled(false) //toolbar에 title 보이지 않도록 설정
+
 
         //최종 결과 데이터 가져오고, 세부 감정은 arraylist에 집어넣기
         //final_depression=
@@ -226,5 +239,34 @@ class ResultActivity : AppCompatActivity() {
 
         lineChart.data
         lineChart.invalidate()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.toolbar_exit -> {
+                //Log.i("toolbar exit btn"," click")
+                //종료 버튼을 눌렀을 때 다이얼로그 생성
+                val builder= AlertDialog.Builder(this)
+                builder.setMessage("결과 보기가 종료됩니다.")
+                    .setPositiveButton("확인",object : DialogInterface.OnClickListener{
+                        override fun onClick(p0: DialogInterface?, p1: Int) {
+                            //메인 페이지로 넘어가기
+                            changeActivitytoMain()
+                        }
+                    }).setNegativeButton("취소",null).show()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.chatting_tool,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    fun changeActivitytoMain(){
+        val i= Intent(this, MenuActivity::class.java)
+        i.putExtra("userID",userid)
+        startActivity(i)
     }
 }

@@ -5,39 +5,44 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.specialmps.databinding.ActivitySignupBinding
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_signup.*
 
-class Signup : AppCompatActivity() {
-    lateinit var rdatabase : DatabaseReference
+class SignUpActivity : AppCompatActivity() {
+    lateinit var rdatabase: DatabaseReference
+
+    private lateinit var binding: ActivitySignupBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signup)
-        init()
+        binding = ActivitySignupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        initListener()
     }
-    private fun init(){
-        rdatabase = FirebaseDatabase.getInstance().getReference()
 
-        signup_register.setOnClickListener {
-            var name = signup_name.text.toString()
-            var id = signup_id.text.toString()
-            var pw = signup_pw.text.toString()
+    private fun initListener() {
+        rdatabase = FirebaseDatabase.getInstance().getReference()
+        binding.signupRegister.setOnClickListener {
+            var name = binding.signupName.text.toString()
+            var id = binding.signupId.text.toString()
+            var pw = binding.signupPw.text.toString()
             //성별, 생년월일
-            var date = signup_date.text.toString()
-            if(id == "" ||pw == "" || name == "" || date == ""){
-                Toast.makeText(this, "모든 정보를 입력해주세요!", Toast.LENGTH_SHORT).show()
+            var date = binding.signupDate.text.toString()
+            if (id == "" || pw == "" || name == "" || date == "") {
+                Toast.makeText(this, R.string.signup_info_request, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if(date.toInt() < 1900 || date.toInt() > 2022){
-                Toast.makeText(this, "태어난 연도를 다시 입력해주세요!", Toast.LENGTH_SHORT).show()
+            if (date.toInt() < 1900 || date.toInt() > 2022) {
+                Toast.makeText(this, R.string.signup_birth_request, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             var sex = ""
-            if(signup_girl.isChecked){
+            if (binding.signupGirl.isChecked) {
                 sex = "female"
             }
-            if(signup_boy.isChecked){
+            if (binding.signupBoy.isChecked) {
                 sex = "male"
             }
             val userinfo = UserInfo(name, id, pw, sex, date)
@@ -51,11 +56,14 @@ class Signup : AppCompatActivity() {
                 }
 
                 override fun onDataChange(datasnapshot: DataSnapshot) {
-                    if(datasnapshot.exists()){//아이디가 이미 존재
-                        Toast.makeText(this@Signup, "이미 존재하는 아이디입니다.", Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        this@Signup.register(userinfo, id)
+                    if (datasnapshot.exists()) {//아이디가 이미 존재
+                        Toast.makeText(
+                            this@SignUpActivity,
+                            R.string.signup_id_exist,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        this@SignUpActivity.register(userinfo, id)
                     }
                 }
 
@@ -71,7 +79,7 @@ class Signup : AppCompatActivity() {
     }
 
 
-    fun register(userinfo : UserInfo, uid : String){
+    fun register(userinfo: UserInfo, uid: String) {
         rdatabase.child("User").child(uid).setValue(userinfo)
         var i = Intent()
         i.putExtra("success", true)

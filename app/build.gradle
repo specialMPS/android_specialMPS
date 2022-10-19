@@ -29,6 +29,10 @@ android {
         sourceCompatibility="8"
     }
 
+    buildFeatures{
+        viewBinding true
+    }
+
 }
 
 dependencies {

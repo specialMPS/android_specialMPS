@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
     fun btnClick(){
         signup_btn.setOnClickListener {
             //회원가입 창
-            val i=Intent(this,Signup::class.java)
+            val i=Intent(this,SignUpActivity::class.java)
             startActivity(i)
         }
 

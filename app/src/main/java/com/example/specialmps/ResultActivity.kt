@@ -218,7 +218,7 @@ class ResultActivity : AppCompatActivity() {
         //데이터베이스에서 최근 10개 날짜, 우울 최종 수치 가져오기
 
 
-        val data=LineDataSet(entry)
+        //val data=LineDataSet(entry)
         val chartData=LineData()
 
 

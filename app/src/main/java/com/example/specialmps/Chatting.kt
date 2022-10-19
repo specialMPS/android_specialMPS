@@ -46,26 +46,6 @@ class Chatting : AppCompatActivity() {
             user= intent.getStringExtra("userID").toString()
             Log.i("userid",user)
         }
-//        if(intent.hasExtra("chat_not_exit_date")){
-//            chat_date=intent.getStringExtra("chat_not_exit_date").toString()
-//            Log.i("chat_not_exit_date",chat_date)
-//        }
-        
-//        if(chat_date!=""){ //결과를 보지않고 종료된 가장 최근 채팅이 있다면 무조건 채팅 이어서 하게끔
-//            call_previous_chat()
-//            val builder=AlertDialog.Builder(this)
-//            builder.setMessage("결과를 보지 않고 종료된 채팅이 있습니다.\n이어서 하시겠습니까?")
-//                .setPositiveButton("예",object :DialogInterface.OnClickListener{
-//                    override fun onClick(p0: DialogInterface?, p1: Int) {
-//                        //최근 채팅 데이터 불러오기
-//                        call_previous_chat()
-//                    }
-//                }).setNegativeButton("아니오",object :DialogInterface.OnClickListener{
-//                    override fun onClick(p0: DialogInterface?, p1: Int) {
-//                        new_chat_start(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE))
-//                    }
-//                }).show()
-//        }
 
         //주제 데이터 읽어오기
         val scan=Scanner(resources.openRawResource(R.raw.q_list))
@@ -79,9 +59,8 @@ class Chatting : AppCompatActivity() {
 
         //Log.i("date+time",currentDate+" "+currentTime())
 
-
         //chatting 날짜 및 시작 시간에 따라 table 구분 짓기
-        chat_start_time=currentTime()
+        chat_start_time=currentDate+" "+currentTime()
 
         val first=Message(first_topic,"chatbot",currentDate,currentTime())
         //질문 리스트 뽑기
@@ -97,6 +76,8 @@ class Chatting : AppCompatActivity() {
         mMessageAdapter=MessageListAdapter(this,messageList)
         mMessageRecycler.adapter=mMessageAdapter
 
+        //var table=mDatabase.getReference("Record").child(user).child(chat_start_time)
+
         //사용자가 메세지를 입력했을 때
         btn_chat_send.setOnClickListener {
             val chat_data=Message(edit_chat_message.text.toString(),"user",LocalDateTime.now().format(DateTimeFormatter.ISO_DATE),currentTime())
@@ -104,21 +85,19 @@ class Chatting : AppCompatActivity() {
             messageList.add(chat_data)
             edit_chat_message.setText("")
             mMessageAdapter.notifyItemInserted(mMessageAdapter.itemCount)
-//            table.push().setValue(chat_data).addOnSuccessListener {
-//                edit_chat_message.setText("")
-//                messageList.add(chat_data)
-//                mMessageAdapter.notifyItemInserted(mMessageAdapter.itemCount)
-//            }
-
+/*
+            var table=mDatabase.getReference("Record").child(user).child(currentDate)
+            table.push().setValue(chat_data).addOnSuccessListener {
+                edit_chat_message.setText("")
+                messageList.add(chat_data)
+                mMessageAdapter.notifyItemInserted(mMessageAdapter.itemCount)
+            }
+*/
         }
 
         //챗봇 대답 UI 생성 및 리스트에 추가
         
         
-        //대화종료 후 messageList를 firebase에 추가-->보류(나가기 버튼 누르면 수행)
-        //saveDB(messageList)
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -141,17 +120,15 @@ class Chatting : AppCompatActivity() {
                 builder.setMessage("대화를 종료하시겠습니까?")
                     .setPositiveButton("결과보기",object :DialogInterface.OnClickListener{
                         override fun onClick(p0: DialogInterface?, p1: Int) {
-                            //대화 리스트 데이터베이스에 저장
+                            //대화 리스트 데이터베이스에 저장하고 검사결과 페이지로 넘어가기
                             saveDB(messageList)
-                            //검사결과 페이지로 넘어가기
-
-                            //검사결과 페이지로 넘어가면서 결과 table에 상담 날짜로 저장
                         }
                     }).setNegativeButton("취소",null).show()
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.chatting_tool,menu)
@@ -164,13 +141,22 @@ class Chatting : AppCompatActivity() {
     }
 
     fun saveDB(chat:List<Message>){ //대화종료 후
+        Log.i("saveDB ",chat.size.toString())
         //대화종료 후 messageList를 firebase에 추가
-        var table=mDatabase.getReference("Record")
-        var userid=table.child(user+" "+chat_start_time)
-        //진단 결과 id(자동생성 key)
+        var table=mDatabase.getReference("Record").child(user).child(chat_start_time)
+        var check=0
+
         for(i in chat){ //message 객체 삽입
-            userid.push().setValue(i)
+            table.push().setValue(i).addOnSuccessListener {
+                check++
+                Log.i("디비 저장 개수 체크 ",check.toString())
+            }
         }
+
+            var i = Intent(this, ResultActivity::class.java)
+            i.putExtra("userID",user)
+            startActivity(i)
+
     }
 
 

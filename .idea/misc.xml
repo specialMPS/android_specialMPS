@@ -26,10 +26,12 @@
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/drawable/ic_baseline_menu_24.xml" value="0.1" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/drawable/ic_launcher_background.xml" value="0.259" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/drawable/round_corner.xml" value="0.258" />
+        <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/layout/activity_chatting.xml" value="0.1" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/layout/activity_hospital.xml" value="0.264" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/layout/activity_menu.xml" value="0.2558876811594203" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/layout/activity_recorded_chat.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/layout/activity_signup.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/park_/Documents/GitHub/android_specialMPS/app/src/main/res/xml/network_security_config.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
@@ -27,7 +26,6 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import kotlinx.android.synthetic.main.activity_menu.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashSet
 
 class MenuActivity : AppCompatActivity() {
 
@@ -149,7 +147,7 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun showChattingPage(){
-        var i = Intent(this, Chatting::class.java)
+        var i = Intent(this, ChattingActivity::class.java)
         i.putExtra("userID", userid)
         startActivity(i)
     }

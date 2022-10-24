@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">http://172.30.1.40:8080/</domain>
+    </domain-config>
+</network-security-config>

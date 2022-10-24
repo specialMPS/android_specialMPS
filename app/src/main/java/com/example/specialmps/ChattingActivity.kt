@@ -34,6 +34,7 @@ class ChattingActivity : AppCompatActivity() {
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
     val serverURL = "http://172.20.10.12:8080/chat?s="
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)
@@ -66,7 +67,8 @@ class ChattingActivity : AppCompatActivity() {
                 edit_chat_message.text.toString(),
                 "user",
                 LocalDateTime.now().format(DateTimeFormatter.ISO_DATE),
-                currentTime()
+                currentTime(),
+                "no emotion" ///////////////////////////////////////사용자 챗 감정 추가
             )
             //list에 추가
             messageList.add(chat_data)
@@ -83,9 +85,6 @@ class ChattingActivity : AppCompatActivity() {
 */
             Log.i("chatting", "입력완료")
         }
-
-        //챗봇 대답 UI 생성 및 리스트에 추가
-
 
     }
 
@@ -104,11 +103,11 @@ class ChattingActivity : AppCompatActivity() {
         //chatting 날짜 및 시작 시간에 따라 table 구분 짓기
         chat_start_time = currentDate + " " + currentTime()
 
-        val first = Message(first_topic, "chatbot", currentDate, currentTime())
+        val first = Message(first_topic, "chatbot", currentDate, currentTime(),"no emotion")
         //질문 리스트 뽑기
         val rand = Random().nextInt(topic_list.size)
         val second_topic = topic_list[rand]
-        val second = Message(second_topic, "chatbot", currentDate, currentTime())
+        val second = Message(second_topic, "chatbot", currentDate, currentTime(),"no emotion")
 
         messageList.add(first)
         messageList.add(second)
@@ -143,7 +142,8 @@ class ChattingActivity : AppCompatActivity() {
             chat,
             "chatbot",
             LocalDateTime.now().format(DateTimeFormatter.ISO_DATE),
-            currentTime()
+            currentTime(),
+            "no emotion"
         )
         //list에 추가
         messageList.add(chat_data)

@@ -7,6 +7,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ImageSpan
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -60,8 +62,8 @@ class ResultActivity : AppCompatActivity() {
         //final_neutrality=
         //final_happiness=
 
-        val score=findViewById<TextView>(R.id.resultfigure)
-        score.text="슬픔 $final_depression%"
+//        val score=findViewById<TextView>(R.id.resultfigure)
+//        score.text="슬픔 $final_depression%"
 
         val pie=findViewById<PieChart>(R.id.pie_chart)
         create_pie_chart(pie)
@@ -140,6 +142,7 @@ class ResultActivity : AppCompatActivity() {
         pieChart.isDrawHoleEnabled=true
         pieChart.setHoleColor(Color.WHITE)
         pieChart.holeRadius=55f
+        pieChart.setDrawCenterText(true)
 
         pieChart.isHighlightPerTapEnabled=true
         pieChart.legend.isEnabled=false
@@ -147,6 +150,9 @@ class ResultActivity : AppCompatActivity() {
         pieChart.setEntryLabelTextSize(12f)
 
         //sample data
+        pieChart.centerText="우울 $final_depression%"
+        pieChart.setCenterTextSize(30f)
+        pieChart.setCenterTextColor(Color.parseColor("#d4a373"))
         val emotions=arrayListOf<PieEntry>()
         emotions.add(PieEntry(15f,"화남"))
         emotions.add(PieEntry(10f,"괴로움"))
@@ -186,6 +192,13 @@ class ResultActivity : AppCompatActivity() {
         pieChart.highlightValues(null)
         pieChart.invalidate()
     }
+
+//    private fun generateCenterSpannableText(): SpannableString {
+//        val imageSpan=ImageSpan(this,R.drawable.maincharacter)
+//        val spannableString=SpannableString(" ")
+//        spannableString.setSpan(imageSpan," ".length-1,"".length,0)
+//        return spannableString
+//    }
 
     fun create_line_chart(lineChart:LineChart){
         //최근 10개의 슬픔 퍼센티지 가지고 와서 그래프화로 추이 나타내기

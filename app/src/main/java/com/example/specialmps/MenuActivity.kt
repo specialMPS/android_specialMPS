@@ -232,7 +232,7 @@ private class TodayDecorator:DayViewDecorator{
     }
 }
 
-private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{
+private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{//////////////////////////////////////////////////////
     val dates:HashSet<CalendarDay>
 
     init {

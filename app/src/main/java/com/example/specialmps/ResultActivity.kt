@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -17,8 +18,16 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_result.*
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.random.Random
 
 class ResultActivity : AppCompatActivity() {
@@ -27,6 +36,7 @@ class ResultActivity : AppCompatActivity() {
     var final_angry:Int=0 //분노 최종 점수
     var final_neutrality:Int=0 //중립 최종 점수
     var final_happiness:Int=0 //행복 최종 점수
+    val mDatabase=FirebaseDatabase.getInstance()
     lateinit var userid : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +50,7 @@ class ResultActivity : AppCompatActivity() {
         //뒤로가기 버튼
         val toolbar: Toolbar =findViewById(R.id.toolbar_channel)
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true) //마우스 왼쪽 버튼 사용
+        //supportActionBar!!.setDisplayHomeAsUpEnabled(true) //뒤로가는 버튼 생성
         supportActionBar!!.setDisplayShowTitleEnabled(false) //toolbar에 title 보이지 않도록 설정
 
 
@@ -63,7 +73,7 @@ class ResultActivity : AppCompatActivity() {
         comment2.text=make_comment(final_depression)
 
         val graph=findViewById<LineChart>(R.id.line_chart)
-
+        create_line_chart(graph)
 
 
     }
@@ -154,15 +164,15 @@ class ResultActivity : AppCompatActivity() {
 
         //sample color
         val colors= arrayListOf<Int>()
-        colors.add(Color.BLUE)
-        colors.add(Color.YELLOW)
-        colors.add(Color.RED)
-        colors.add(Color.BLACK)
-        colors.add(Color.CYAN)
-        colors.add(Color.DKGRAY)
-        colors.add(Color.GREEN)
-        colors.add(Color.LTGRAY)
-        colors.add(Color.MAGENTA)
+        colors.add(Color.parseColor("#333d29"))
+        colors.add(Color.parseColor("#414833"))
+        colors.add(Color.parseColor("#656d4a"))
+        colors.add(Color.parseColor("#a4ac86"))
+        colors.add(Color.parseColor("#b6ad90"))
+        colors.add(Color.parseColor("#a68a64"))
+        colors.add(Color.parseColor("#936639"))
+        colors.add(Color.parseColor("#7f4f24"))
+        colors.add(Color.parseColor("#582f0e"))
 
         dataSet.colors=colors
 
@@ -179,6 +189,67 @@ class ResultActivity : AppCompatActivity() {
 
     fun create_line_chart(lineChart:LineChart){
         //최근 10개의 슬픔 퍼센티지 가지고 와서 그래프화로 추이 나타내기
+
+        lineChart.clear()
+
+        val entry= arrayListOf<Entry>()
+        val chartData=LineData()
+
+        //sample data
+        val cal=Calendar.getInstance()
+        cal.time=Date()
+        val df=SimpleDateFormat("yyyy-MM-dd")
+        var datetime=1f
+        entry.add(Entry(1f,54f))
+        entry.add(Entry(2f,12f))
+        entry.add(Entry(3f,100f))
+        entry.add(Entry(4f,34f))
+        entry.add(Entry(5f,19f))
+        entry.add(Entry(6f,7f))
+        entry.add(Entry(7f,90f))
+        entry.add(Entry(8f,64f))
+        entry.add(Entry(9f,0f))
+        entry.add(Entry(10f,50f))
+
+        val lineDatas=LineDataSet(entry, "최근 10개 우울감정 수치")
+        chartData.addDataSet(lineDatas)
+
+        lineDatas.lineWidth=3f
+        lineDatas.circleRadius=6f
+        lineDatas.setDrawValues(true)
+        lineDatas.setDrawCircleHole(true)
+        lineDatas.setDrawCircles(true)
+        lineDatas.setDrawHorizontalHighlightIndicator(false)
+        lineDatas.setDrawHighlightIndicators(false)
+        lineDatas.setColor(Color.parseColor("#c2c5aa"))
+        lineDatas.setCircleColor(Color.parseColor("#c2c5aa"))
+        lineDatas.valueTextSize=10f
+
+        //데이터베이스에서 최근 10개 날짜, 우울 최종 수치 가져오기
+        val result=mDatabase.getReference("Result").child(userid).limitToLast(10)
+            .addChildEventListener(object: ChildEventListener {
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                    Log.i("snapshot.key : ",snapshot.key.toString())
+
+                }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
 
         lineChart.extraBottomOffset=5f
         lineChart.description.isEnabled=false
@@ -199,8 +270,13 @@ class ResultActivity : AppCompatActivity() {
         legend.calculatedLineSizes
 
         val xAxis=lineChart.xAxis //x축
+//        xAxis.valueFormatter=object:IndexAxisValueFormatter(){
+//            override fun getFormattedValue(value: Float): String {
+//
+//            }
+//        }
         xAxis.setDrawAxisLine(false)
-        xAxis.setDrawAxisLine(false)
+        xAxis.setDrawGridLines(false)
         xAxis.position=XAxis.XAxisPosition.BOTTOM
         xAxis.granularity=1f
         xAxis.textSize=14f
@@ -222,22 +298,12 @@ class ResultActivity : AppCompatActivity() {
         yAxisRight.textColor=Color.parseColor("#d4a373")
         yAxisRight.setDrawAxisLine(false)
         yAxisRight.setDrawLabels(false)
-        yAxisRight.axisLineWidth=2f
+        yAxisRight.axisLineWidth=1f
         yAxisRight.axisMaximum=100f
         yAxisRight.axisMinimum=0f
         //yAxisRight.granularity
 
-        val entry= arrayListOf<Entry>()
-        //데이터베이스에서 최근 10개 날짜, 우울 최종 수치 가져오기
-
-
-        //val data=LineDataSet(entry)
-        val chartData=LineData()
-
-
-
-
-        lineChart.data
+        lineChart.data=chartData
         lineChart.invalidate()
     }
 
@@ -268,5 +334,12 @@ class ResultActivity : AppCompatActivity() {
         val i= Intent(this, MenuActivity::class.java)
         i.putExtra("userID",userid)
         startActivity(i)
+    }
+}
+
+class TimeAxisValueFormat:IndexAxisValueFormatter(){
+    //x축을 날짜 형식으로 포맷
+    override fun getFormattedValue(value: Float): String {
+        return super.getFormattedValue(value)
     }
 }

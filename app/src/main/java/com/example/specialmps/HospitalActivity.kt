@@ -37,53 +37,66 @@ import java.net.URLEncoder
 
 class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
-    var fusedLocationClient : FusedLocationProviderClient?=null
-    var locationCallback : LocationCallback?=null
-    var locationRequest : com.google.android.gms.location.LocationRequest?=null
+    var fusedLocationClient: FusedLocationProviderClient? = null
+    var locationCallback: LocationCallback? = null
+    var locationRequest: com.google.android.gms.location.LocationRequest? = null
 
     lateinit var googlemap: GoogleMap
 
-    var searchKeyword : String = ""
+    var searchKeyword: String = ""
     var loc = LatLng(37.5552002, 126.9706291)
 
     val key1 = "b17ee37aae43497d8c94690258a08512"
     val key2 = "8072387393bf4a9f969c353ed2ad845b"
 
-    val hospitalSearchUrl = "https://openapi.gg.go.kr/MindHealthPromotionCenter?KEY="+key1+"&Type=xml&pSize=200&"
-    val hospitalURL = "https://openapi.gg.go.kr/MindHealthPromotionCenter?KEY="+key1+"&Type=xml&pSize=200&pIndex="
+    val hospitalSearchUrl =
+        "https://openapi.gg.go.kr/MindHealthPromotionCenter?KEY=" + key1 + "&Type=xml&pSize=200&"
+    val hospitalURL =
+        "https://openapi.gg.go.kr/MindHealthPromotionCenter?KEY=" + key1 + "&Type=xml&pSize=200&pIndex="
     val hospitalURL2 = " https://openapi.gg.go.kr/Ggmindmedinst"
 
-    var arr : ArrayList<HospitalInfo> = ArrayList() //Marker에 넣을 병원 정보
+    var arr: ArrayList<HospitalInfo> = ArrayList() //Marker에 넣을 병원 정보
 
-    companion object{
+    companion object {
         private val markerIconSize = 100
     }
 
-    lateinit var markerIcon : Bitmap
+    lateinit var markerIcon: Bitmap
     //private val hospitalManager by lazy { HospitalManager()} // 나중에 초기화 선언
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hospital)
         map_linearlayout.visibility = View.GONE
-        markerIcon = BitmapUtils.resizeMapIcons(this, R.drawable.marker_icon, markerIconSize, markerIconSize)
+        markerIcon =
+            BitmapUtils.resizeMapIcons(this, R.drawable.marker_icon, markerIconSize, markerIconSize)
         init()
     }
-    fun init(){
-        if(ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+
+    fun init() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             //허용한 경우
             getuserlocation()
             startLocationUpdates()
             initMap()
 
-        }
-        else{
+        } else {
             //허용되지 않았을 때 권한 요청
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 100)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ), 100
+            )
         }
 
         search_map_button.setOnClickListener {
@@ -91,20 +104,19 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             map_linearlayout.visibility = View.GONE //마커 띄워져 있는 경우 없애기
 
             searchKeyword = search_map.text.toString()
-            if(searchKeyword == ""){
-                Toast.makeText(this, "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
+            if (searchKeyword == "") {
+                Toast.makeText(this, getString(R.string.search_input), Toast.LENGTH_SHORT).show()
                 //arr.clear()
                 //initHospital()
                 return@setOnClickListener
             }
             search_map_button.isClickable = false
-            Toast.makeText(this, "잠시 기다려주세요!", Toast.LENGTH_SHORT).show()
-            val check = searchKeyword[searchKeyword.length-1]
-            if( check == '시' || check == '군'){//도시이름인 경우
+            Toast.makeText(this, getString(R.string.message_wait), Toast.LENGTH_SHORT).show()
+            val check = searchKeyword[searchKeyword.length - 1]
+            if (check == '시' || check == '군') {//도시이름인 경우
                 startTask(true)
-                Log.i("도시", "도시도시")
-            }
-            else{//병원 이름인 경우
+                //Log.i("도시", "도시도시")
+            } else {//병원 이름인 경우
                 startTask(false)
             }
             search_map.text = null
@@ -120,35 +132,35 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
     }
 
 
-    fun softkeyboardhide(){//입력창 focus되었을 때 나타나는 키보드 다시 내리는 함수
+    fun softkeyboardhide() {//입력창 focus되었을 때 나타나는 키보드 다시 내리는 함수
         val im = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(search_map.windowToken, 0)
     }
 
-    object BitmapUtils{//커스텀 마커이미지를 비트맵으로 변경
-        fun resizeMapIcons(context: Context, iconId: Int, width: Int, height: Int):Bitmap{
+    object BitmapUtils {
+        //커스텀 마커이미지를 비트맵으로 변경
+        fun resizeMapIcons(context: Context, iconId: Int, width: Int, height: Int): Bitmap {
             val imageBitmap = BitmapFactory.decodeResource(context.resources, iconId)
             return Bitmap.createScaledBitmap(imageBitmap, width, height, false)
         }
     }
 
-    fun startTask(cityCheck:Boolean){
+    fun startTask(cityCheck: Boolean) {
 
         search_map_button.isClickable = true
 
         CoroutineScope(Dispatchers.Main).launch {
-            CoroutineScope(Dispatchers.IO).launch{
+            CoroutineScope(Dispatchers.IO).launch {
                 var argUrl = hospitalSearchUrl
-                if(cityCheck){//도시명 검색한 경우
+                if (cityCheck) {//도시명 검색한 경우
                     val searchEncode = URLEncoder.encode(searchKeyword, "utf-8")
                     argUrl = argUrl.plus("SIGUN_NM=").plus(searchEncode).plus("&pIndex=")
-                }
-                else{ //병원 이름 검색한 경우
+                } else { //병원 이름 검색한 경우
                     argUrl = argUrl.plus("pIndex=")
                 }
                 arr.clear()
-                Log.i("url 확인", argUrl)
-                for( pIndex in 1..30){
+                //Log.i("url 확인", argUrl)
+                for (pIndex in 1..30) {
 
                     var curURL = argUrl.plus(pIndex.toString())
                     val url = URL(curURL)
@@ -157,15 +169,15 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
                     var hospitals: Elements
                     hospitals = doc.select("row")
-                    if(hospitals.size <= 0){
+                    if (hospitals.size <= 0) {
                         break;
                     }
-                    Log.i("apicheck", hospitals.toString())
+                    //Log.i("apicheck", hospitals.toString())
                     for (hospital in hospitals) {
                         val available = hospital.select("BSN_STATE_NM").text()
 
-                        Log.i("apicheck", "병원정보")
-                        val latitude= hospital.select("REFINE_WGS84_LAT").text()
+                        //Log.i("apicheck", "병원정보")
+                        val latitude = hospital.select("REFINE_WGS84_LAT").text()
                         val longitude = hospital.select("REFINE_WGS84_LOGT").text()
                         val hosName = hospital.select("CENTER_NM").text()
                         val hosPhone = hospital.select("TELNO").text()
@@ -173,12 +185,12 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 //                        if(latitude == null || longitude == null){
 //                            continue
 //                        }
-                        if(!cityCheck){//병원 검색한 경우
-                            if(!hosName.contains(searchKeyword, true)){
+                        if (!cityCheck) {//병원 검색한 경우
+                            if (!hosName.contains(searchKeyword, true)) {
                                 continue
                             }
                         }
-                        var l : LatLng
+                        var l: LatLng
                         l = LatLng(latitude.toDouble(), longitude.toDouble())
                         Log.i("hospitalcheck", hospital.select("BIZPLC_NM").text().toString())
                         arr.add(HospitalInfo(hosName, hosPhone, l, hosAddress))
@@ -204,7 +216,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             googlemap.clear()
 
 
-            for(hospital in arr){
+            for (hospital in arr) {
                 val position = hospital.hLatlng
                 val options = MarkerOptions()
                 options.position(position)
@@ -217,7 +229,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
     }
 
-    fun stopLocationUpdates(){
+    fun stopLocationUpdates() {
         fusedLocationClient?.removeLocationUpdates(locationCallback!!)
     }
 
@@ -226,21 +238,27 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         stopLocationUpdates()
     }
 
-    private fun getuserlocation(){
+    private fun getuserlocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             //위치정보 동의 했는지 확인
             return
         }
         //서울역 37.5552002, 126.9706291
 
-        fusedLocationClient?.lastLocation?.addOnSuccessListener { location : Location? ->
-            if (location != null){
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
+            if (location != null) {
                 loc = LatLng(location.latitude, location.longitude)
-                Log.i("현재위치", location.latitude.toString() +", "+location.longitude.toString())
-            }
-            else{//사용자의 기기에서 현재위치를 받을 수 없는 경우
+                Log.i("현재위치", location.latitude.toString() + ", " + location.longitude.toString())
+            } else {//사용자의 기기에서 현재위치를 받을 수 없는 경우
                 loc = LatLng(37.5552002, 126.9706291)
             }
 
@@ -249,7 +267,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
     private fun startLocationUpdates() {//location정보 갱신
 
-        locationRequest = com.google.android.gms.location.LocationRequest.create()?.apply{
+        locationRequest = com.google.android.gms.location.LocationRequest.create()?.apply {
             //interval = 10000
             //fastestInterval = 5000
             //priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -258,11 +276,11 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         }
 
         Log.i("current", "success")
-        locationCallback = object : LocationCallback(){
+        locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
-                locationResult?:return
-                for(location in locationResult.locations){
-                    if(location != null){
+                locationResult ?: return
+                for (location in locationResult.locations) {
+                    if (location != null) {
                         loc = LatLng(location.latitude, location.longitude)
                     }
 
@@ -278,7 +296,14 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 //            }
         }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -289,8 +314,8 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             return
         }
         fusedLocationClient?.requestLocationUpdates(
-            locationRequest!!, locationCallback!!, Looper.getMainLooper())
-
+            locationRequest!!, locationCallback!!, Looper.getMainLooper()
+        )
 
 
     }
@@ -301,22 +326,22 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode == 100){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                    grantResults[1] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                grantResults[1] == PackageManager.PERMISSION_GRANTED
+            ) {
                 getuserlocation()
                 startLocationUpdates()
                 initMap()
-            }
-            else{
-                Toast.makeText(this, "위치정보 제공에 동의해야 이용할 수 있습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, getString(R.string.check_gps), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun initMap() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync{
+        mapFragment.getMapAsync {
             googlemap = it
             googlemap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 10.0f))
             googlemap.setMinZoomPreference(10.0f)
@@ -335,7 +360,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         }
     }
 
-    fun initMapListener(){
+    fun initMapListener() {
         googlemap.setOnMapClickListener {
             //googlemap.clear()//마커정보 전부 삭제
             map_linearlayout.visibility = View.GONE
@@ -366,8 +391,8 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
          */
 
         CoroutineScope(Dispatchers.Main).launch {
-            CoroutineScope(Dispatchers.IO).launch{
-                for( pIndex in 1..30){
+            CoroutineScope(Dispatchers.IO).launch {
+                for (pIndex in 1..30) {
                     val argUrl = hospitalURL
                     var curURL = argUrl.plus(pIndex.toString())
                     val url = URL(curURL)
@@ -375,7 +400,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 
                     var hospitals: Elements
                     hospitals = doc.select("row")
-                    if(hospitals.size <= 0){
+                    if (hospitals.size <= 0) {
                         break;
                     }
                     Log.i("apicheck", hospitals.toString())
@@ -383,7 +408,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                         val available = hospital.select("BSN_STATE_NM").text()
 
                         Log.i("apicheck", "병원정보")
-                        val latitude= hospital.select("REFINE_WGS84_LAT").text()
+                        val latitude = hospital.select("REFINE_WGS84_LAT").text()
                         val longitude = hospital.select("REFINE_WGS84_LOGT").text()
                         val hosName = hospital.select("CENTER_NM").text()
                         val hosPhone = hospital.select("TELNO").text()
@@ -391,7 +416,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 //                        if(latitude == null || longitude == null){
 //                            continue
 //                        }
-                        var l : LatLng
+                        var l: LatLng
                         l = LatLng(latitude.toDouble(), longitude.toDouble())
                         Log.i("hospitalcheck", hospital.select("BIZPLC_NM").text().toString())
                         arr.add(HospitalInfo(hosName, hosPhone, l, hosAddress))
@@ -413,7 +438,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             Log.i("hospitalnum", arr.size.toString())
 
 
-            for(hospital in arr){
+            for (hospital in arr) {
                 val position = hospital.hLatlng
                 val options = MarkerOptions()
                 options.position(position)

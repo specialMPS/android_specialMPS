@@ -24,4 +24,10 @@
     <string name="register">등록</string>
     <string name="cancel">취소</string>
 
+    <string name="check_gps">위치정보 제공에 동의해야 이용할 수 있습니다.</string>
+    <string name="search_input">검색어를 입력해주세요</string>
+    <string name="message_wait">잠시 기다려주세요!</string>
+
+    <string name="chat_start">안녕하세요. 오늘은 어떤 기분으로 저를 찾아오셨나요?</string>
+
 </resources>

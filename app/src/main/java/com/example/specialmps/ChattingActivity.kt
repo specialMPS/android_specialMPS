@@ -173,6 +173,7 @@ class ChattingActivity : AppCompatActivity() {
                             saveDB(messageList)
                         }
                     }).setNegativeButton("취소", null).show()
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

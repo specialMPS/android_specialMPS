@@ -26,7 +26,7 @@ import java.util.*
 
 class ChattingActivity : AppCompatActivity() {
 
-    val first_topic = getString(R.string.chat_start)
+    val first_topic = "안녕하세요. 오늘은 어떤 기분으로 저를 찾아오셨나요?"
     lateinit var mMessageAdapter: MessageListAdapter
     val messageList = mutableListOf<Message>()
     var topic_list = ArrayList<String>()
@@ -50,13 +50,9 @@ class ChattingActivity : AppCompatActivity() {
             Log.i("userid", user)
         }
 
-        init_chat_setting()
-        init_UI_event()
+        default_chat_setting()
 
 
-    }
-
-    fun init_UI_event() {
         var mMessageRecycler: RecyclerView = findViewById(R.id.recycler_chat)
         mMessageRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -79,7 +75,6 @@ class ChattingActivity : AppCompatActivity() {
             getAIresponse(edit_chat_message.text.toString())
             edit_chat_message.setText("")
             mMessageAdapter.notifyItemInserted(mMessageAdapter.itemCount)
-            mMessageRecycler.scrollToPosition(mMessageAdapter.itemCount - 1)
 /*
             var table=mDatabase.getReference("Record").child(user).child(currentDate)
             table.push().setValue(chat_data).addOnSuccessListener {
@@ -88,10 +83,12 @@ class ChattingActivity : AppCompatActivity() {
                 mMessageAdapter.notifyItemInserted(mMessageAdapter.itemCount)
             }
 */
+            Log.i("chatting", "입력완료")
         }
+
     }
 
-    fun init_chat_setting() {
+    fun default_chat_setting() {
         //주제 데이터 읽어오기
         val scan = Scanner(resources.openRawResource(R.raw.q_list))
         while (scan.hasNextLine()) {
@@ -125,10 +122,10 @@ class ChattingActivity : AppCompatActivity() {
                 val doc = Jsoup.connect(url.toString()).get()
                 Log.i("doc", doc.toString())
 
-                val elements: Elements = doc.select("body")
+                val elements:Elements = doc.select("body")
                 Log.i("elements", elements.toString())
 
-                for (element in elements) {
+                for (element in elements){
                     val jsons = JSONObject(element.text())
 
                     Log.i("test2", jsons.getString("answer"))
@@ -140,7 +137,7 @@ class ChattingActivity : AppCompatActivity() {
         }
     }
 
-    fun addChatbotDB(chat: String) {
+    fun addChatbotDB(chat : String){
         val chat_data = Message(
             chat,
             "chatbot",
@@ -151,7 +148,6 @@ class ChattingActivity : AppCompatActivity() {
         //list에 추가
         messageList.add(chat_data)
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> { //toolbar의 back이 눌렸을 때
@@ -176,7 +172,6 @@ class ChattingActivity : AppCompatActivity() {
                             saveDB(messageList)
                         }
                     }).setNegativeButton("취소", null).show()
-                finish()
             }
         }
         return super.onOptionsItemSelected(item)

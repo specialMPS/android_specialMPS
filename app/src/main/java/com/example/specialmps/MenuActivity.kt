@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
@@ -24,8 +26,12 @@ import com.google.firebase.database.ValueEventListener
 import com.prolificinteractive.materialcalendarview.*
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import kotlinx.android.synthetic.main.activity_menu.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MenuActivity : AppCompatActivity() {
 
@@ -33,7 +39,6 @@ class MenuActivity : AppCompatActivity() {
     val mDatabase= FirebaseDatabase.getInstance()
     var result_ID:String=""
     lateinit var DateList:ArrayAdapter<String>
-    lateinit var CalendarList:HashSet<CalendarDay>
     var DateListString=ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +49,6 @@ class MenuActivity : AppCompatActivity() {
         }
 
         DateList=callDatelist()
-        //Log.i("DateList",DateList[0])
-        CalendarList=getDatesArraylist()
         init()
     }
 
@@ -56,7 +59,7 @@ class MenuActivity : AppCompatActivity() {
         calendar.state().edit().setCalendarDisplayMode(CalendarMode.MONTHS).commit()
 
         calendar.addDecorators(TodayDecorator(),SundayDecorator(),SaturdayDecorator())
-        calendar.addDecorator(EventDecorator(CalendarList))
+        getDatesArraylist()
 
         menu.setOnClickListener {
             //메뉴 버튼 누르면 세부 메뉴 보여주기 --> 다른 곳을 눌렀을 때 화면 꺼지는 것도 구현
@@ -84,6 +87,10 @@ class MenuActivity : AppCompatActivity() {
                             //병원검색 페이지로 이동
                             showHospitalPage()
                         }
+                        R.id.results ->{
+                            //최종결과만 있는 페이지 가기
+                            //showResultsPage()
+                        }
                     }
                     return true
                 }
@@ -109,6 +116,7 @@ class MenuActivity : AppCompatActivity() {
                     for(date in snapshot.children){
                         val item=date.key.toString()
                         madapter.add(item)
+                        //DateListString.add(item)
                         Log.i("each date",item)
                     }
                 }
@@ -152,41 +160,55 @@ class MenuActivity : AppCompatActivity() {
         startActivity(i)
     }
 
-    fun getDatesArraylist():HashSet<CalendarDay>{
+    fun getDatesArraylist(){ //상담했던 날짜 캘린더에 표시하기
 
-        var dateslist=HashSet<CalendarDay>()
-        mDatabase.getReference("Record").child(userid).addValueEventListener(object : //Result 테이블로 수정
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    for(date in snapshot.children){
-                        val item=date.key.toString()
-                        val datetime=item.split(" ")
-                        Log.i("datetime[0]",datetime[0])
-                        dateslist.add(dateTocalendar(datetime[0]))
-                        DateListString.add(item)
+        var dates=ArrayList<CalendarDay>()
+        val calendar=findViewById<MaterialCalendarView>(R.id.calender)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            mDatabase.getReference("Record").child(userid).addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    if(snapshot.exists()){
+                        for(date in snapshot.children){
+                            val item=date.key.toString()
+                            DateListString.add(item)
+                            //Log.i("날짜 리스트 개수 확인 ",DateListString.size.toString())
+                            var date_list=item.split("-"," ")
+                            var dot_year=date_list[0].toInt()
+                            var dot_month=date_list[1].toInt()-1 //한 달씩 더해져서 나오므로 하나 빼줘야함.
+                            var dot_day=date_list[2].toInt()
+
+                            //달력에 표시할 날짜 가져오기
+                            var date=Calendar.getInstance()
+                            date.set(dot_year,dot_month,dot_day)
+                            //Log.i("날짜 ",date_list[0]+date_list[1]+date_list[1])
+                            //달력에 표시할 날짜 day list에 추가
+                            var day=CalendarDay.from(date)
+                            dates.add(day)
+                            //Log.i("총 날짜 개수 ",dates.size.toString())
+
+                        }
                     }
                 }
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            calender!!.removeDecorators()
+            calender!!.invalidateDecorators()
+
+            calendar.addDecorators(TodayDecorator(),SundayDecorator(),SaturdayDecorator())
+            if(dates.size>0){
+                calendar!!.addDecorator(EventDecorator(dates))//색 지정하려면 인자 추가
             }
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
 
-        return dateslist
-    }
+        },1000)
 
-    fun dateTocalendar(date:String):CalendarDay{
-
-        val cal=Calendar.getInstance()
-        val format=SimpleDateFormat("yyyy-MM-dd")
-        val day=format.parse(date)
-        day.month=day.month+1
-        cal.set(day.year,day.month,day.day)
-        val resultdate=CalendarDay.from(day)
-
-        Log.i("캘린더형식으로 변경",resultdate.toString())
-        return resultdate
     }
 }
 
@@ -230,7 +252,7 @@ private class TodayDecorator:DayViewDecorator{
     }
 }
 
-private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{//////////////////////////////////////////////////////
+private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{///////////
     val dates:HashSet<CalendarDay>
 
     init {
@@ -242,7 +264,8 @@ private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{//
     }
 
     override fun decorate(view: DayViewFacade?) {
-        view?.addSpan(DotSpan(5F,Color.parseColor("#d4a373")))
-        //view?.addSpan(DotSpan(3F,Color.BLUE))
+        view?.addSpan(DotSpan(8F,Color.parseColor("#d4a373")))//기본 색
     }
+
+
 }

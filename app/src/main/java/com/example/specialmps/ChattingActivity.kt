@@ -34,6 +34,7 @@ class ChattingActivity : AppCompatActivity() {
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
     val serverURL = "http://172.20.10.12:8080/chat?s="
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)

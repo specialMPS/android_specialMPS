@@ -28,12 +28,14 @@ class ChattingActivity : AppCompatActivity() {
 
     val first_topic = "안녕하세요. 오늘은 어떤 기분으로 저를 찾아오셨나요?"
     lateinit var mMessageAdapter: MessageListAdapter
+    lateinit var mMessageRecycler: RecyclerView
+    lateinit var name : String
     val messageList = mutableListOf<Message>()
     var topic_list = ArrayList<String>()
-    var user: String = ""
+    var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
-    val serverURL = "http://172.20.10.12:8080/chat?s="
+    val serverURL = "http://172.30.1.26:8080/chat?s="
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,16 +48,20 @@ class ChattingActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayShowTitleEnabled(false) //toolbar에 title 보이지 않도록 설정
 
         if (intent.hasExtra("userID")) {
-            user = intent.getStringExtra("userID").toString()
-            Log.i("userid", user)
+            userid = intent.getStringExtra("userID").toString()
+            Log.i("userid", userid)
+        }
+        if(intent.hasExtra("name")){
+            name = intent.getStringExtra("name").toString()
         }
 
         default_chat_setting()
 
 
-        var mMessageRecycler: RecyclerView = findViewById(R.id.recycler_chat)
+        mMessageRecycler = findViewById(R.id.recycler_chat)
         mMessageRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
         mMessageAdapter = MessageListAdapter(this, messageList)
         mMessageRecycler.adapter = mMessageAdapter
 
@@ -75,6 +81,7 @@ class ChattingActivity : AppCompatActivity() {
             getAIresponse(edit_chat_message.text.toString())
             edit_chat_message.setText("")
             mMessageAdapter.notifyItemInserted(mMessageAdapter.itemCount)
+            mMessageRecycler.scrollToPosition(mMessageAdapter.getItemCount() - 1)
 /*
             var table=mDatabase.getReference("Record").child(user).child(currentDate)
             table.push().setValue(chat_data).addOnSuccessListener {
@@ -134,6 +141,7 @@ class ChattingActivity : AppCompatActivity() {
 
             }.join()
             mMessageAdapter.notifyItemInserted(mMessageAdapter.itemCount)
+            mMessageRecycler.scrollToPosition(mMessageAdapter.getItemCount() - 1)
         }
     }
 
@@ -191,7 +199,7 @@ class ChattingActivity : AppCompatActivity() {
     fun saveDB(chat: List<Message>) { //대화종료 후
         Log.i("saveDB ", chat.size.toString())
         //대화종료 후 messageList를 firebase에 추가
-        var table = mDatabase.getReference("Record").child(user).child(chat_start_time)
+        var table = mDatabase.getReference("Record").child(userid).child(chat_start_time)
         var check = 0
 
         for (i in chat) { //message 객체 삽입
@@ -202,8 +210,10 @@ class ChattingActivity : AppCompatActivity() {
         }
 
         var i = Intent(this, ResultActivity::class.java)
-        i.putExtra("userID", user)
+        i.putExtra("userID", userid)
+        i.putExtra("name", name)
         startActivity(i)
+        finish()
 
     }
 

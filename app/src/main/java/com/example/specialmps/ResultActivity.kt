@@ -5,41 +5,36 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.ImageSpan
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_result.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.random.Random
 
 class ResultActivity : AppCompatActivity() {
 
-    var final_depression:Int=0 //우울감 최종 점수
-    var final_angry:Int=0 //분노 최종 점수
-    var final_neutrality:Int=0 //중립 최종 점수
-    var final_happiness:Int=0 //행복 최종 점수
+    var final_depression:Float=0f //우울감 최종 점수
+    var final_angry:Float=0f //분노 최종 점수
+    var final_neutrality:Float=0f //중립 최종 점수
+    var final_happiness:Float=0f //행복 최종 점수
     val mDatabase=FirebaseDatabase.getInstance()
     lateinit var userid : String
+    lateinit var name : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +42,10 @@ class ResultActivity : AppCompatActivity() {
 
         if(intent.hasExtra("userID")){
             userid = intent.getStringExtra("userID").toString()
+        }
+
+        if(intent.hasExtra("name")){
+            name = intent.getStringExtra("name").toString()
         }
 
         //뒤로가기 버튼
@@ -57,10 +56,10 @@ class ResultActivity : AppCompatActivity() {
 
 
         //최종 결과 데이터 가져오고, 세부 감정은 arraylist에 집어넣기
-        //final_depression=
-        //final_angry=
-        //final_neutrality=
-        //final_happiness=
+        final_depression=49.2f
+        final_angry=42.5f
+        final_neutrality=3.1f
+        final_happiness=5.2f
 
 //        val score=findViewById<TextView>(R.id.resultfigure)
 //        score.text="슬픔 $final_depression%"
@@ -69,8 +68,7 @@ class ResultActivity : AppCompatActivity() {
         create_pie_chart(pie)
 
         val comment1=findViewById<TextView>(R.id.comment_result)
-        comment1.text="$userid 님의 최종 점수는 우울 $final_depression%, 불안 $final_angry%, 기쁨 $final_happiness%, 중립 $final_neutrality% 입니다."
-
+        comment1.text="$name 님의 최종 점수는 우울 $final_depression%, 분노 $final_angry%, 행복 $final_happiness%, 중립 $final_neutrality% 입니다."
         val comment2=findViewById<TextView>(R.id.comment_chat)
         comment2.text=make_comment(final_depression)
 
@@ -80,51 +78,51 @@ class ResultActivity : AppCompatActivity() {
 
     }
 
-    fun make_comment(depression:Int):String{
+    fun make_comment(depression:Float):String{
         var last_comment=""
         val num=(0..1).random()+1
         when(depression){
-            0 ->{
+            0f ->{
                 val resID:Int=resources.getIdentifier("zero${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 1..9 -> {
+            in 1f..9f -> {
                 val resID:Int=resources.getIdentifier("zero${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 10..19 -> {
+            in 10f..19f -> {
                 val resID:Int=resources.getIdentifier("ten${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 20..29 -> {
+            in 20f..29f -> {
                 val resID:Int=resources.getIdentifier("twenty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 30..39 -> {
+            in 30f..39f -> {
                 val resID:Int=resources.getIdentifier("thirty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 40..49 -> {
+            in 40f..49f -> {
                 val resID:Int=resources.getIdentifier("forty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 50..59 -> {
+            in 50f..59f -> {
                 val resID:Int=resources.getIdentifier("fifty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 60..69 -> {
+            in 60f..69f -> {
                 val resID:Int=resources.getIdentifier("sixty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 70..79 -> {
+            in 70f..79f -> {
                 val resID:Int=resources.getIdentifier("seventy${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 80..89 ->{
+            in 80f..89f ->{
                 val resID:Int=resources.getIdentifier("eighty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 90..100 ->{
+            in 90f..100f ->{
                 val resID:Int=resources.getIdentifier("ninety${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
@@ -154,15 +152,15 @@ class ResultActivity : AppCompatActivity() {
         pieChart.setCenterTextSize(30f)
         pieChart.setCenterTextColor(Color.parseColor("#d4a373"))
         val emotions=arrayListOf<PieEntry>()
-        emotions.add(PieEntry(15f,"화남"))
-        emotions.add(PieEntry(10f,"괴로움"))
-        emotions.add(PieEntry(15f,"우울함"))
-        emotions.add(PieEntry(10f,"중립"))
-        emotions.add(PieEntry(10f,"기쁨"))
-        emotions.add(PieEntry(10f,"긴장됨"))
-        emotions.add(PieEntry(10f,"비참함"))
-        emotions.add(PieEntry(10f,"놀람"))
-        emotions.add(PieEntry(10f,"피로함"))
+        emotions.add(PieEntry(10.5f,"화남"))
+        emotions.add(PieEntry(19.6f,"괴로움"))
+        emotions.add(PieEntry(24.3f,"우울함"))
+        emotions.add(PieEntry(3.1f,"중립"))
+        emotions.add(PieEntry(5.2f,"기쁨"))
+        emotions.add(PieEntry(9.3f,"긴장됨"))
+        emotions.add(PieEntry(11.6f,"비참함"))
+        emotions.add(PieEntry(3.1f,"놀람"))
+        emotions.add(PieEntry(13.3f,"피로함"))
 
         val dataSet=PieDataSet(emotions,"Result Emotions")
         dataSet.setDrawIcons(false)
@@ -213,16 +211,16 @@ class ResultActivity : AppCompatActivity() {
         cal.time=Date()
         val df=SimpleDateFormat("yyyy-MM-dd")
         var datetime=1f
-        entry.add(Entry(1f,54f))
-        entry.add(Entry(2f,12f))
-        entry.add(Entry(3f,100f))
-        entry.add(Entry(4f,34f))
-        entry.add(Entry(5f,19f))
-        entry.add(Entry(6f,7f))
-        entry.add(Entry(7f,90f))
-        entry.add(Entry(8f,64f))
-        entry.add(Entry(9f,0f))
-        entry.add(Entry(10f,50f))
+        entry.add(Entry(1f,0f))
+        entry.add(Entry(2f,0f))
+        entry.add(Entry(3f,56.3f))
+        entry.add(Entry(4f,34.2f))
+        entry.add(Entry(5f,19.8f))
+        entry.add(Entry(6f,7.9f))
+        entry.add(Entry(7f,90.1f))
+        entry.add(Entry(8f,64.4f))
+        entry.add(Entry(9f,15.6f))
+        entry.add(Entry(10f,49.2f))
 
         val lineDatas=LineDataSet(entry, "최근 10개 우울감정 수치")
         chartData.addDataSet(lineDatas)

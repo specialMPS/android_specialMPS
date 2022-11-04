@@ -29,13 +29,12 @@ import kotlinx.android.synthetic.main.activity_menu.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MenuActivity : AppCompatActivity() {
 
     lateinit var userid : String
+    lateinit var name : String
     val mDatabase= FirebaseDatabase.getInstance()
     var result_ID:String=""
     lateinit var DateList:ArrayAdapter<String>
@@ -46,6 +45,9 @@ class MenuActivity : AppCompatActivity() {
         setContentView(R.layout.activity_menu)
         if(intent.hasExtra("userID")){
             userid = intent.getStringExtra("userID").toString()
+        }
+        if(intent.hasExtra("name")){
+            name = intent.getStringExtra("name").toString()
         }
 
         DateList=callDatelist()
@@ -68,7 +70,7 @@ class MenuActivity : AppCompatActivity() {
             drawerLayout.openDrawer(GravityCompat.START)
 
             val id=findViewById<TextView>(R.id.userID)
-            id.setText(userid+" 님")
+            id.setText(name+" 님")
 
             val navi=findViewById<NavigationView>(R.id.navigation)
             navi.setNavigationItemSelectedListener(object :NavigationView.OnNavigationItemSelectedListener{
@@ -157,6 +159,7 @@ class MenuActivity : AppCompatActivity() {
     fun showChattingPage(){
         var i = Intent(this, ChattingActivity::class.java)
         i.putExtra("userID", userid)
+        i.putExtra("name", name)
         startActivity(i)
     }
 

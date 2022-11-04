@@ -38,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
                                 val i=Intent(this@LoginActivity,MenuActivity::class.java)
 
                                 i.putExtra("userID",id)
+                                i.putExtra("name", user.name)
                                 //i.putExtra("resultID","2022-07-17")
                                 startActivity(i)
                                 finish()

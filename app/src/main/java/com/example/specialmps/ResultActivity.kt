@@ -35,6 +35,7 @@ class ResultActivity : AppCompatActivity() {
     val mDatabase=FirebaseDatabase.getInstance()
     lateinit var userid : String
     lateinit var name : String
+    lateinit var emotionScore:EmotionInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,10 @@ class ResultActivity : AppCompatActivity() {
 
         if(intent.hasExtra("name")){
             name = intent.getStringExtra("name").toString()
+        }
+
+        if(intent.hasExtra("emotionScore")){
+            emotionScore = intent.getSerializableExtra("emotionScore") as EmotionInfo
         }
 
         //뒤로가기 버튼

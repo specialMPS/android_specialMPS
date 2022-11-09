@@ -214,6 +214,7 @@ class ChattingActivity : AppCompatActivity() {
         var i = Intent(this, ResultActivity::class.java)
         i.putExtra("userID", userid)
         i.putExtra("name", name)
+        i.putExtra("emotionScore", emotionScore)
         startActivity(i)
         finish()
 

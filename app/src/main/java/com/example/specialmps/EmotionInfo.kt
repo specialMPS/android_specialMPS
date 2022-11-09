@@ -1,5 +1,7 @@
 package com.example.specialmps
 
+import java.io.Serializable
+
 data class EmotionInfo(
     val anger: Float = 0f,
     val happy: Float = 0f,
@@ -10,4 +12,4 @@ data class EmotionInfo(
     val miserable: Float = 0f,
     val depress: Float = 0f,
     val pain: Float = 0f
-)
+) : Serializable

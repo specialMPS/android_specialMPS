@@ -36,7 +36,8 @@ class ChattingActivity : AppCompatActivity() {
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
     val serverURL = "http://172.30.1.26:8080/chat?s="
-
+    var userChatCount : Int = 0
+    var emotionScore : EmotionInfo = EmotionInfo()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)
@@ -143,6 +144,7 @@ class ChattingActivity : AppCompatActivity() {
             mMessageAdapter.notifyItemInserted(mMessageAdapter.itemCount)
             mMessageRecycler.scrollToPosition(mMessageAdapter.getItemCount() - 1)
         }
+
     }
 
     fun addChatbotDB(chat : String){

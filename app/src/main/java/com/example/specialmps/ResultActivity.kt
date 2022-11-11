@@ -350,6 +350,7 @@ class ResultActivity : AppCompatActivity() {
         val i= Intent(this, MenuActivity::class.java)
         i.putExtra("userID",userid)
         startActivity(i)
+        finish()
     }
 }
 

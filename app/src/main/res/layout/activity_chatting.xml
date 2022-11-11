@@ -43,7 +43,7 @@
         android:scrollbars="vertical"
         android:layout_marginBottom="16dp"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/chat_ballon"
+        app:layout_constraintBottom_toTopOf="@+id/layout_chat_chatbox"
         app:layout_constraintTop_toBottomOf="@+id/layout_group_chat"/>
 
     <TextView
@@ -64,7 +64,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/layout_chat_chatbox"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">

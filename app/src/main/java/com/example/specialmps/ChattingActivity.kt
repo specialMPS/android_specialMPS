@@ -35,7 +35,7 @@ class ChattingActivity : AppCompatActivity() {
     var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
-    val serverURL = "http://172.30.1.26:8080/chat?s="
+    val serverURL = "http://172.20.10.12:8080/chat?s="
     var userChatCount : Int = 0
     var emotionScore : EmotionInfo = EmotionInfo()
     override fun onCreate(savedInstanceState: Bundle?) {

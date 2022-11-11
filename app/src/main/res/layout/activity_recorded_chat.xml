@@ -44,7 +44,7 @@
         app:layout_constrainedHeight="true"
         android:background="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/record_chat_ballon"
-        app:layout_constraintBottom_toBottomOf="@+id/layout_group_chat"/>
+        app:layout_constraintTop_toBottomOf="@+id/layout_group_chat"/>
 
     <TextView
         android:layout_width="wrap_content"

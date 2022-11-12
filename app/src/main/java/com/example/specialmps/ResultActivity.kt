@@ -61,10 +61,10 @@ class ResultActivity : AppCompatActivity() {
 
 
         //최종 결과 데이터 가져오고, 세부 감정은 arraylist에 집어넣기
-        final_depression=49.2f
-        final_angry=42.5f
-        final_neutrality=3.1f
-        final_happiness=5.2f
+        final_depression=71.7f
+        final_angry=21.3f
+        final_neutrality=7f
+        final_happiness=0f
 
 //        val score=findViewById<TextView>(R.id.resultfigure)
 //        score.text="슬픔 $final_depression%"
@@ -157,15 +157,15 @@ class ResultActivity : AppCompatActivity() {
         pieChart.setCenterTextSize(30f)
         pieChart.setCenterTextColor(Color.parseColor("#d4a373"))
         val emotions=arrayListOf<PieEntry>()
-        emotions.add(PieEntry(10.5f,"화남"))
-        emotions.add(PieEntry(19.6f,"괴로움"))
-        emotions.add(PieEntry(24.3f,"우울함"))
-        emotions.add(PieEntry(3.1f,"중립"))
-        emotions.add(PieEntry(5.2f,"기쁨"))
-        emotions.add(PieEntry(9.3f,"긴장됨"))
-        emotions.add(PieEntry(11.6f,"비참함"))
-        emotions.add(PieEntry(3.1f,"놀람"))
-        emotions.add(PieEntry(13.3f,"피로함"))
+        emotions.add(PieEntry(6.6f,"화남"))
+        emotions.add(PieEntry(13.7f,"괴로움"))
+        emotions.add(PieEntry(25.9f,"우울함"))
+        emotions.add(PieEntry(7f,"중립"))
+        emotions.add(PieEntry(0f,"기쁨"))
+        emotions.add(PieEntry(1f,"긴장됨"))
+        emotions.add(PieEntry(27.1f,"비참함"))
+        emotions.add(PieEntry(0f,"놀람"))
+        emotions.add(PieEntry(18.7f,"피로함"))
 
         val dataSet=PieDataSet(emotions,"Result Emotions")
         dataSet.setDrawIcons(false)

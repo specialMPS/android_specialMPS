@@ -257,6 +257,7 @@ class ChattingActivity : AppCompatActivity() {
                         var dto = Gson().fromJson<EmotionInfo>(str, EmotionInfo::class.java)
                         runOnUiThread {
                             emotionScore = dto
+                            Log.i("checkEmotion", emotionScore.toString())
                             moveActivity()
                         }
                     }
@@ -266,11 +267,10 @@ class ChattingActivity : AppCompatActivity() {
         }
 
 
-
     }
 
 
-    fun moveActivity(){
+    fun moveActivity() {
         var i = Intent(this, ResultActivity::class.java)
         i.putExtra("userID", userid)
         i.putExtra("name", name)

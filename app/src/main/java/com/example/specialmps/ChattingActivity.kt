@@ -12,32 +12,38 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_chatting.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import okhttp3.*
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
+import java.io.IOException
 import java.net.URL
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class ChattingActivity : AppCompatActivity() {
 
     val first_topic = "안녕하세요. 오늘은 어떤 기분으로 저를 찾아오셨나요?"
     lateinit var mMessageAdapter: MessageListAdapter
     lateinit var mMessageRecycler: RecyclerView
-    lateinit var name : String
+    lateinit var name: String
     val messageList = mutableListOf<Message>()
     var topic_list = ArrayList<String>()
     var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
-    val serverURL = "http://172.20.10.12:8080/chat?s="
-    var userChatCount : Int = 0
-    var emotionScore : EmotionInfo = EmotionInfo()
+    val serverURL = "http://172.30.1.28:8080/chat?s="
+    val BASE_URL = "http://172.30.1.28:8080/emotion?s="
+    var userChat: String = " "
+    var emotionScore: EmotionInfo = EmotionInfo()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)
@@ -52,7 +58,7 @@ class ChattingActivity : AppCompatActivity() {
             userid = intent.getStringExtra("userID").toString()
             Log.i("userid", userid)
         }
-        if(intent.hasExtra("name")){
+        if (intent.hasExtra("name")) {
             name = intent.getStringExtra("name").toString()
         }
 
@@ -77,6 +83,8 @@ class ChattingActivity : AppCompatActivity() {
                 currentTime(),
                 "no emotion" ///////////////////////////////////////사용자 챗 감정 추가
             )
+            userChat = userChat.plus(edit_chat_message.text.toString()).plus(" ")
+            Log.i("추가", userChat)
             //list에 추가
             messageList.add(chat_data)
             getAIresponse(edit_chat_message.text.toString())
@@ -111,11 +119,11 @@ class ChattingActivity : AppCompatActivity() {
         //chatting 날짜 및 시작 시간에 따라 table 구분 짓기
         chat_start_time = currentDate + " " + currentTime()
 
-        val first = Message(first_topic, "chatbot", currentDate, currentTime(),"no emotion")
+        val first = Message(first_topic, "chatbot", currentDate, currentTime(), "no emotion")
         //질문 리스트 뽑기
         val rand = Random().nextInt(topic_list.size)
         val second_topic = topic_list[rand]
-        val second = Message(second_topic, "chatbot", currentDate, currentTime(),"no emotion")
+        val second = Message(second_topic, "chatbot", currentDate, currentTime(), "no emotion")
 
         messageList.add(first)
         messageList.add(second)
@@ -130,10 +138,10 @@ class ChattingActivity : AppCompatActivity() {
                 val doc = Jsoup.connect(url.toString()).get()
                 Log.i("doc", doc.toString())
 
-                val elements:Elements = doc.select("body")
+                val elements: Elements = doc.select("body")
                 Log.i("elements", elements.toString())
 
-                for (element in elements){
+                for (element in elements) {
                     val jsons = JSONObject(element.text())
 
                     Log.i("test2", jsons.getString("answer"))
@@ -147,7 +155,7 @@ class ChattingActivity : AppCompatActivity() {
 
     }
 
-    fun addChatbotDB(chat : String){
+    fun addChatbotDB(chat: String) {
         val chat_data = Message(
             chat,
             "chatbot",
@@ -158,6 +166,7 @@ class ChattingActivity : AppCompatActivity() {
         //list에 추가
         messageList.add(chat_data)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> { //toolbar의 back이 눌렸을 때
@@ -211,14 +220,63 @@ class ChattingActivity : AppCompatActivity() {
             }
         }
 
+//        val okHttpClient = OkHttpClient.Builder()
+//            .connectTimeout(3, TimeUnit.MINUTES)
+//            .readTimeout(3, TimeUnit.MINUTES)
+//            .writeTimeout(10, TimeUnit.SECONDS)
+//            .addInterceptor(Interceptor { chain ->
+//                val newRequest: Request = chain.request().newBuilder()
+//                    .build()
+//                chain.proceed(newRequest)
+//            })
+//            .build()
+//
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .client(okHttpClient)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            var result = CoroutineScope(Dispatchers.Default).async {
+                var client = OkHttpClient.Builder()
+                    .connectTimeout(3, TimeUnit.MINUTES)
+                    .readTimeout(3, TimeUnit.MINUTES)
+                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .build()
+                val BASE_URL = "http://172.30.1.28:8080/emotion?s=".plus(userChat)
+                var req = Request.Builder().url(BASE_URL).build()
+                client.newCall(req).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        Log.i("network", "failure")
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        var str = response.body?.string()
+                        Log.i("bodyEmotion", str!!)
+                        var dto = Gson().fromJson<EmotionInfo>(str, EmotionInfo::class.java)
+                        runOnUiThread {
+                            emotionScore = dto
+                            moveActivity()
+                        }
+                    }
+
+                })
+            }.await()
+        }
+
+
+
+    }
+
+
+    fun moveActivity(){
         var i = Intent(this, ResultActivity::class.java)
         i.putExtra("userID", userid)
         i.putExtra("name", name)
         i.putExtra("emotionScore", emotionScore)
         startActivity(i)
         finish()
-
     }
-
 
 }

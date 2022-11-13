@@ -61,10 +61,10 @@ class ResultActivity : AppCompatActivity() {
 
 
         //최종 결과 데이터 가져오고, 세부 감정은 arraylist에 집어넣기
-        final_depression=71.7f
-        final_angry=21.3f
-        final_neutrality=7f
-        final_happiness=0f
+        final_depression=59.1f
+        final_angry=30.5f
+        final_neutrality=0f
+        final_happiness=10.4f
 
 //        val score=findViewById<TextView>(R.id.resultfigure)
 //        score.text="슬픔 $final_depression%"
@@ -91,39 +91,39 @@ class ResultActivity : AppCompatActivity() {
                 val resID:Int=resources.getIdentifier("zero${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 1f..9f -> {
+            in 1f..10f -> {
                 val resID:Int=resources.getIdentifier("zero${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 10f..19f -> {
+            in 10f..20f -> {
                 val resID:Int=resources.getIdentifier("ten${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 20f..29f -> {
+            in 20f..30f -> {
                 val resID:Int=resources.getIdentifier("twenty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 30f..39f -> {
+            in 30f..40f -> {
                 val resID:Int=resources.getIdentifier("thirty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 40f..49f -> {
+            in 40f..50f -> {
                 val resID:Int=resources.getIdentifier("forty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 50f..59f -> {
+            in 50f..60f -> {
                 val resID:Int=resources.getIdentifier("fifty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 60f..69f -> {
+            in 60f..70f -> {
                 val resID:Int=resources.getIdentifier("sixty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 70f..79f -> {
+            in 70f..80f -> {
                 val resID:Int=resources.getIdentifier("seventy${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
-            in 80f..89f ->{
+            in 80f..90f ->{
                 val resID:Int=resources.getIdentifier("eighty${num}","string",this.packageName)
                 last_comment=resources.getString(resID)
             }
@@ -157,15 +157,15 @@ class ResultActivity : AppCompatActivity() {
         pieChart.setCenterTextSize(30f)
         pieChart.setCenterTextColor(Color.parseColor("#d4a373"))
         val emotions=arrayListOf<PieEntry>()
-        emotions.add(PieEntry(6.6f,"화남"))
-        emotions.add(PieEntry(13.7f,"괴로움"))
-        emotions.add(PieEntry(25.9f,"우울함"))
-        emotions.add(PieEntry(7f,"중립"))
-        emotions.add(PieEntry(0f,"기쁨"))
-        emotions.add(PieEntry(1f,"긴장됨"))
-        emotions.add(PieEntry(27.1f,"비참함"))
-        emotions.add(PieEntry(0f,"놀람"))
-        emotions.add(PieEntry(18.7f,"피로함"))
+        emotions.add(PieEntry(33.3f,"피로함"))
+        emotions.add(PieEntry(19.8f,"우울함"))
+        emotions.add(PieEntry(16.1f,"괴로움"))
+        emotions.add(PieEntry(12.7f,"긴장됨"))
+        emotions.add(PieEntry(10.4f,"기쁨"))
+        emotions.add(PieEntry(6f,"비참함"))
+        //emotions.add(PieEntry(33.1f,"중립"))
+        emotions.add(PieEntry(1.4f,"화남"))
+        emotions.add(PieEntry(0.3f,"놀람"))
 
         val dataSet=PieDataSet(emotions,"Result Emotions")
         dataSet.setDrawIcons(false)

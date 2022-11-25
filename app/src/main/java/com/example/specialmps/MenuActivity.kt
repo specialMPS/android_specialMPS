@@ -1,5 +1,6 @@
 package com.example.specialmps
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
@@ -11,13 +12,19 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toolbar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.specialmps.databinding.SlidingrootnavBinding
+import com.google.android.gms.tagmanager.Container
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -25,10 +32,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.prolificinteractive.materialcalendarview.*
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
+import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.activity_menu.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 import java.util.*
 
 class MenuActivity : AppCompatActivity() {
@@ -51,6 +60,7 @@ class MenuActivity : AppCompatActivity() {
         }
 
         DateList=callDatelist()
+        sliding_root_nav()
         init()
     }
 
@@ -63,45 +73,83 @@ class MenuActivity : AppCompatActivity() {
         calendar.addDecorators(TodayDecorator(),SundayDecorator(),SaturdayDecorator())
         getDatesArraylist()
 
-        menu.setOnClickListener {
-            //메뉴 버튼 누르면 세부 메뉴 보여주기 --> 다른 곳을 눌렀을 때 화면 꺼지는 것도 구현
+//        menu.setOnClickListener {
+//            //메뉴 버튼 누르면 세부 메뉴 보여주기 --> 다른 곳을 눌렀을 때 화면 꺼지는 것도 구현
+//
+//            val drawerLayout=findViewById<DrawerLayout>(R.id.draw_layout)
+//            drawerLayout.openDrawer(GravityCompat.START)
+//
+//            val id=findViewById<TextView>(R.id.userID)
+//            id.setText(name+" 님")
+//
+//            val navi=findViewById<NavigationView>(R.id.navigation)
+//            navi.setNavigationItemSelectedListener(object :NavigationView.OnNavigationItemSelectedListener{
+//                override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//                    item.setChecked(true)
+//                    drawerLayout.closeDrawers()
+//                    val selectedMenu=item.itemId
+//                    when(selectedMenu){
+//                        R.id.record->{
+//                            selectDay(DateList)
+//                        }
+//                        R.id.counseling->{
+//                            showChattingPage()
+//                        }
+//                        R.id.hospital->{
+//                            //병원검색 페이지로 이동
+//                            showHospitalPage()
+//                        }
+//                        R.id.results ->{
+//                            //최종결과만 있는 페이지 가기
+//                            //showResultsPage()
+//                        }
+//                    }
+//                    return true
+//                }
+//            })
+//        }
 
-            val drawerLayout=findViewById<DrawerLayout>(R.id.draw_layout)
-            drawerLayout.openDrawer(GravityCompat.START)
+        val toolbar=findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_menu)
+        toolbar.setTitleTextColor(Color.parseColor("#d4a373"))
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
 
-            val id=findViewById<TextView>(R.id.userID)
-            id.setText(name+" 님")
-
-            val navi=findViewById<NavigationView>(R.id.navigation)
-            navi.setNavigationItemSelectedListener(object :NavigationView.OnNavigationItemSelectedListener{
-                override fun onNavigationItemSelected(item: MenuItem): Boolean {
-                    item.setChecked(true)
-                    drawerLayout.closeDrawers()
-                    val selectedMenu=item.itemId
-                    when(selectedMenu){
-                        R.id.record->{
-                            selectDay(DateList)
-                        }
-                        R.id.counseling->{
-                            showChattingPage()
-                        }
-                        R.id.hospital->{
-                            //병원검색 페이지로 이동
-                            showHospitalPage()
-                        }
-                        R.id.results ->{
-                            //최종결과만 있는 페이지 가기
-                            //showResultsPage()
-                        }
-                    }
-                    return true
-                }
-            })
-        }
+        SlidingRootNavBuilder(this).withToolbarMenuToggle(toolbar).withMenuLayout(R.layout.slidingrootnav)
+            .withContentClickableWhenMenuOpened(true).inject()
 
         newchat.setOnClickListener {
             showChattingPage()
         }
+    }
+
+    fun sliding_root_nav(){
+        //slidingrootnav 레이아웃에서 클릭 이벤트
+        val inflater=layoutInflater.inflate(R.layout.slidingrootnav,null)
+        val id=inflater.findViewById<TextView>(R.id.userID)
+        id.setText(name+" 님")
+
+
+        val counseling=inflater.findViewById<TextView>(R.id.counseling)
+        counseling.setOnClickListener{
+            showChattingPage()
+        }
+
+        val record=inflater.findViewById<TextView>(R.id.record)
+        record.setOnClickListener {
+            selectDay(DateList)
+        }
+
+        val hospital=inflater.findViewById<TextView>(R.id.hospital)
+        hospital.setOnClickListener {
+            showHospitalPage()
+        }
+
+        val results=inflater.findViewById<TextView>(R.id.results)
+        results.setOnClickListener {
+            //최종결과만 있는 페이지 가기
+            //showResultsPage()
+        }
+
     }
 
     fun callDatelist(): ArrayAdapter<String> {

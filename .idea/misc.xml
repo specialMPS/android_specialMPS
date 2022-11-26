@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/btn_radius.xml" value="0.1835" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/chatting_tool.xml" value="0.1" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/loading.xml" value="0.1" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_chart_result.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_chatting.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_login.xml" value="0.3333333333333333" />
@@ -13,12 +14,16 @@
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_recorded_chat.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_result.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_server_example.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_siding_root_nav.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_signup.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_sliding_root_nav.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/chat_ballon.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/chat_ballon_etc.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/circle_btn.xml" value="0.15989583333333332" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/content_sliding_root_nav.xml" value="0.16354166666666667" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/item_option.xml" value="0.3333333333333333" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/loading.xml" value="0.1" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/loading_layout.xml" value="0.1" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/main_menu.xml" value="0.16458333333333333" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/pie_chart.xml" value="0.1" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/result_barchart.xml" value="0.14895833333333333" />

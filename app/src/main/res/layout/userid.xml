@@ -12,7 +12,6 @@
         android:id="@+id/maincharacter"
         android:background="@drawable/maincharacter"
         android:layout_marginLeft="40dp"
-
         android:layout_marginVertical="40dp"
         />
 

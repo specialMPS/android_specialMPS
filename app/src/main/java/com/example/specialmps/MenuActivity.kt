@@ -61,6 +61,7 @@ class MenuActivity : AppCompatActivity() {
 
         DateList=callDatelist()
         sliding_root_nav()
+
         init()
     }
 
@@ -114,8 +115,9 @@ class MenuActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
 
-        SlidingRootNavBuilder(this).withToolbarMenuToggle(toolbar).withMenuLayout(R.layout.slidingrootnav)
-            .withContentClickableWhenMenuOpened(true).inject()
+        SlidingRootNavBuilder(this).withToolbarMenuToggle(toolbar)
+            .withMenuLayout(R.layout.slidingrootnav).inject()
+        sliding_root_nav()
 
         newchat.setOnClickListener {
             showChattingPage()
@@ -123,15 +125,17 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun sliding_root_nav(){
+        //slidingrootnav는 inject해서 사용되는 것이기 때문에 레이아웃을 inflate해서 클릭이벤트를 해도 안먹히는 듯
+        //따로 어댑터를 만들거나 해야된다.
         //slidingrootnav 레이아웃에서 클릭 이벤트
         val inflater=layoutInflater.inflate(R.layout.slidingrootnav,null)
-        val id=inflater.findViewById<TextView>(R.id.userID)
+        val id=inflater.findViewById<TextView>(R.id._userID)
         id.setText(name+" 님")
-
 
         val counseling=inflater.findViewById<TextView>(R.id.counseling)
         counseling.setOnClickListener{
             showChattingPage()
+            Log.i("dd", "sliding root nav btn click completed")
         }
 
         val record=inflater.findViewById<TextView>(R.id.record)
@@ -315,7 +319,7 @@ private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{//
     }
 
     override fun decorate(view: DayViewFacade?) {
-        view?.addSpan(DotSpan(8F,Color.parseColor("#d4a373")))//기본 색
+        view?.addSpan(DotSpan(13F,Color.parseColor("#d4a373")))//기본 색
     }
 
 

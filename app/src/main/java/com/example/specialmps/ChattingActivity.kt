@@ -40,8 +40,8 @@ class ChattingActivity : AppCompatActivity() {
     var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
-    val serverURL = "http://172.30.1.28:8080/chat?s="
-    val BASE_URL = "http://172.30.1.28:8080/emotion?s="
+    val serverURL = "http://172.20.10.12:8080/chat?s="
+    val BASE_URL = "http://172.20.10.12:8080/emotion?s="
     var userChat: String = " "
     var emotionScore: EmotionInfo = EmotionInfo()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -244,7 +244,7 @@ class ChattingActivity : AppCompatActivity() {
                     .readTimeout(3, TimeUnit.MINUTES)
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .build()
-                val BASE_URL = "http://172.30.1.28:8080/emotion?s=".plus(userChat)
+                val BASE_URL = "http://172.20.10.12:8080/emotion?s=".plus(userChat)
                 var req = Request.Builder().url(BASE_URL).build()
                 client.newCall(req).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {

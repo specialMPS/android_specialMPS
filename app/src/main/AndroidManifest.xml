@@ -16,6 +16,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Siding_root_nav"
+            android:exported="false" />
+        <activity
             android:name=".ChartResultActivity"
             android:exported="false" />
         <activity

@@ -7,19 +7,25 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     tools:context=".MenuActivity">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/menu"
-            android:layout_width="55dp"
-            android:layout_height="58dp"
+<!--        <ImageButton-->
+<!--            android:id="@+id/menu"-->
+<!--            android:layout_width="55dp"-->
+<!--            android:layout_height="58dp"-->
+<!--            android:background="#ffffff"-->
+<!--            android:padding="10dp"-->
+<!--            android:src="@drawable/ic_baseline_menu_24" />-->
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar_menu"
             android:background="#ffffff"
-            android:padding="10dp"
-            android:src="@drawable/ic_baseline_menu_24" />
+            android:minHeight="?attr/actionBarSize"/>
 
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
             android:layout_width="match_parent"
@@ -39,13 +45,13 @@
             android:textColor="#ffffff"/>
     </LinearLayout>
 
-        <com.google.android.material.navigation.NavigationView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/navigation"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/userid"
-            app:menu="@menu/main_menu" />
+<!--        <com.google.android.material.navigation.NavigationView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/navigation"-->
+<!--            android:layout_gravity="start"-->
+<!--            android:fitsSystemWindows="true"-->
+<!--            app:headerLayout="@layout/userid"-->
+<!--            app:menu="@menu/main_menu" />-->
 
 </androidx.drawerlayout.widget.DrawerLayout>

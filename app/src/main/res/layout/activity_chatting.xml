@@ -91,5 +91,4 @@
             android:text="보내기"
             android:textColor="#84a98c"/>
     </RelativeLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

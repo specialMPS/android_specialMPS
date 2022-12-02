@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
                             if(user.pw==pw){
                                 Toast.makeText(this@LoginActivity,user.name+"님이 로그인하셨습니다.",Toast.LENGTH_SHORT).show()
                                 val i=Intent(this@LoginActivity,MenuActivity::class.java)
-
+                                Log.i("메뉴 액티비티 넘어가기 직전"," 성공")
                                 i.putExtra("userID",id)
                                 i.putExtra("name", user.name)
                                 //i.putExtra("resultID","2022-07-17")

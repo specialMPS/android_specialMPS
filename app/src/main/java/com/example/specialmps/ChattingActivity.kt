@@ -211,7 +211,7 @@ class ChattingActivity : AppCompatActivity() {
 
     fun saveDB(chat: List<Message>) { //대화종료 후
         Log.i("saveDB ", chat.size.toString())
-        //로딩 페이지 띄우기 /////////////////////////////////////////////////
+        //로딩 페이지 띄우기
         val layout=layoutInflater.inflate(R.layout.loading_layout,null)
         addContentView(layout,LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT))
 
@@ -264,8 +264,7 @@ class ChattingActivity : AppCompatActivity() {
                         runOnUiThread {
                             emotionScore = dto
                             Log.i("checkEmotion", emotionScore.toString())
-                            //로딩 view 없애기--deleteView 사용하면 될 듯
-
+                            //로딩 뷰는 액티비티 빠져나왔다 다시 들어오면 없어져 있음.
                             moveActivity()
                         }
                     }

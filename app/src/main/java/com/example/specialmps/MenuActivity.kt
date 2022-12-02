@@ -18,12 +18,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import android.widget.Toolbar
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.example.specialmps.databinding.SlidingrootnavBinding
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tagmanager.Container
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
@@ -32,15 +34,18 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.prolificinteractive.materialcalendarview.*
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
-import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.activity_menu.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout
+import nl.psdcompany.duonavigationdrawer.views.DuoMenuView
+import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle
 import org.w3c.dom.Text
 import java.util.*
+import kotlin.collections.ArrayList
 
-class MenuActivity : AppCompatActivity() {
+class MenuActivity : AppCompatActivity() , DuoMenuView.OnMenuClickListener{
 
     lateinit var userid : String
     lateinit var name : String
@@ -48,10 +53,14 @@ class MenuActivity : AppCompatActivity() {
     var result_ID:String=""
     lateinit var DateList:ArrayAdapter<String>
     var DateListString=ArrayList<String>()
+    private var mViewHolder: ViewHolder?=null
+    private var mMenuAdapter:MenuAdapter?=null
+    private var mTitles=ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
+
         if(intent.hasExtra("userID")){
             userid = intent.getStringExtra("userID").toString()
         }
@@ -60,10 +69,20 @@ class MenuActivity : AppCompatActivity() {
         }
 
         DateList=callDatelist()
-        sliding_root_nav()
+
+        mTitles= ArrayList(Arrays.asList(*resources.getStringArray(R.array.menuOptions)))
+        mViewHolder=ViewHolder()
+        handleToolbar()
+        handleMenu()
+        handleDrawer()
+
+        mMenuAdapter!!.setViewSelected(0,true)
+        title=mTitles[0]
 
         init()
+
     }
+
 
     fun init(){
 
@@ -74,9 +93,9 @@ class MenuActivity : AppCompatActivity() {
         calendar.addDecorators(TodayDecorator(),SundayDecorator(),SaturdayDecorator())
         getDatesArraylist()
 
+        //navigation drawer 방법
 //        menu.setOnClickListener {
 //            //메뉴 버튼 누르면 세부 메뉴 보여주기 --> 다른 곳을 눌렀을 때 화면 꺼지는 것도 구현
-//
 //            val drawerLayout=findViewById<DrawerLayout>(R.id.draw_layout)
 //            drawerLayout.openDrawer(GravityCompat.START)
 //
@@ -109,51 +128,14 @@ class MenuActivity : AppCompatActivity() {
 //                }
 //            })
 //        }
-
-        val toolbar=findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_menu)
-        toolbar.setTitleTextColor(Color.parseColor("#d4a373"))
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-
-        SlidingRootNavBuilder(this).withToolbarMenuToggle(toolbar)
-            .withMenuLayout(R.layout.slidingrootnav).inject()
-        sliding_root_nav()
+//        val toolbar=findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_menu)
+//        toolbar.setTitleTextColor(Color.parseColor("#d4a373"))
+//        setSupportActionBar(toolbar)
+//        supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         newchat.setOnClickListener {
             showChattingPage()
         }
-    }
-
-    fun sliding_root_nav(){
-        //slidingrootnav는 inject해서 사용되는 것이기 때문에 레이아웃을 inflate해서 클릭이벤트를 해도 안먹히는 듯
-        //따로 어댑터를 만들거나 해야된다.
-        //slidingrootnav 레이아웃에서 클릭 이벤트
-        val inflater=layoutInflater.inflate(R.layout.slidingrootnav,null)
-        val id=inflater.findViewById<TextView>(R.id._userID)
-        id.setText(name+" 님")
-
-        val counseling=inflater.findViewById<TextView>(R.id.counseling)
-        counseling.setOnClickListener{
-            showChattingPage()
-            Log.i("dd", "sliding root nav btn click completed")
-        }
-
-        val record=inflater.findViewById<TextView>(R.id.record)
-        record.setOnClickListener {
-            selectDay(DateList)
-        }
-
-        val hospital=inflater.findViewById<TextView>(R.id.hospital)
-        hospital.setOnClickListener {
-            showHospitalPage()
-        }
-
-        val results=inflater.findViewById<TextView>(R.id.results)
-        results.setOnClickListener {
-            //최종결과만 있는 페이지 가기
-            //showResultsPage()
-        }
-
     }
 
     fun callDatelist(): ArrayAdapter<String> {
@@ -261,9 +243,67 @@ class MenuActivity : AppCompatActivity() {
             if(dates.size>0){
                 calendar!!.addDecorator(EventDecorator(dates))//색 지정하려면 인자 추가
             }
-
         },1000)
 
+    }
+
+    private fun handleToolbar(){
+        mViewHolder!!.mToolbar.setTitleTextColor(Color.parseColor("#d4a373"))
+        setSupportActionBar(mViewHolder!!.mToolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
+    }
+
+    private fun handleDrawer(){
+        val DrawerToggle=DuoDrawerToggle(
+            this, mViewHolder!!.mDrawerLayout,mViewHolder!!.mToolbar,
+            R.string.navigation_drawer_open,R.string.navigation_drawer_close        )
+        mViewHolder!!.mDrawerLayout.setDrawerListener(DrawerToggle)
+        DrawerToggle.syncState()
+
+    }
+
+    private fun handleMenu(){
+        mMenuAdapter= MenuAdapter(mTitles)
+        mViewHolder!!.mDuoMenuView.setOnMenuClickListener(this)
+        mViewHolder!!.mDuoMenuView.adapter=mMenuAdapter
+    }
+
+    private inner class ViewHolder internal constructor(){
+        val mDrawerLayout:DuoDrawerLayout
+        val mDuoMenuView:DuoMenuView
+        val mToolbar:Toolbar
+
+        init {
+            val id=findViewById<TextView>(R.id.userID)
+            id.setText(name+" 님")
+
+            mDrawerLayout=findViewById<View>(R.id.draw_layout) as DuoDrawerLayout
+            mDuoMenuView=mDrawerLayout.menuView as DuoMenuView
+            mToolbar=findViewById<View>(R.id.toolbar_menu) as Toolbar
+        }
+    }
+
+    override fun onFooterClicked() {
+        //Toast.makeText(this,"Test clicked footer",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onHeaderClicked() {
+        //Toast.makeText(this,"Test clicked header",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onOptionClicked(position: Int, objectClicked: Any?) {
+        //set the toolbar title
+        title=mTitles[position]
+
+        //set the right options selected
+        mMenuAdapter!!.setViewSelected(position,true)
+        when(position){
+            0->{showChattingPage()}
+            1->{selectDay(DateList)}
+            2->{showHospitalPage()}
+        }
+        //close the drawer
+        mViewHolder!!.mDrawerLayout.closeDrawer()
     }
 }
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#d4a373"
+    android:id="@+id/header_layout"
     android:orientation="horizontal">
 
     <ImageView
@@ -12,7 +13,7 @@
         android:id="@+id/maincharacter"
         android:background="@drawable/maincharacter"
         android:layout_marginLeft="40dp"
-        android:layout_marginVertical="40dp"
+        android:layout_marginTop="40dp"
         />
 
     <TextView
@@ -24,9 +25,28 @@
         android:textColor="#ffffff"
         android:textAlignment="center"
         android:text="noinfo"
-        android:layout_marginVertical="50dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
+        android:textSize="30sp" />
 
-        android:textSize="30sp"
-        />
-</LinearLayout>
+<!--    <TextView-->
+<!--        android:id="@+id/subtitle"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/maincharacter"-->
+<!--        android:layout_marginLeft="60dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:fontFamily="@font/light"-->
+<!--        android:text="오늘 당신의 하루를 응원합니다!"-->
+<!--        android:textColor="#ffffff"-->
+<!--        android:textSize="20dp" />-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:id="@+id/view_header_border"
+        android:layout_marginTop="38dp"
+        android:background="#ffffff"
+        android:layout_below="@+id/maincharacter"/>
+</RelativeLayout>

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewManager
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -85,7 +84,7 @@ class ChattingActivity : AppCompatActivity() {
                 currentTime(),
                 "no emotion" ///////////////////////////////////////사용자 챗 감정 추가
             )
-            userChat = userChat.plus(edit_chat_message.text.toString()).plus(" ")
+            userChat = userChat.plus(edit_chat_message.text.toString()).plus("$")
             Log.i("추가", userChat)
             //list에 추가
             messageList.add(chat_data)
@@ -212,8 +211,14 @@ class ChattingActivity : AppCompatActivity() {
     fun saveDB(chat: List<Message>) { //대화종료 후
         Log.i("saveDB ", chat.size.toString())
         //로딩 페이지 띄우기 /////////////////////////////////////////////////
-        val layout=layoutInflater.inflate(R.layout.loading_layout,null)
-        addContentView(layout,LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT))
+        val layout = layoutInflater.inflate(R.layout.loading_layout, null)
+        addContentView(
+            layout,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
+        )
 
         //대화종료 후 messageList를 firebase에 추가
         var table = mDatabase.getReference("Record").child(userid).child(chat_start_time)

@@ -41,7 +41,7 @@ class ChattingActivity : AppCompatActivity() {
     var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
-    val serverURL = "http://172.20.10.12:8080/chat?s="
+    val serverURL = "http://192.168.198.210:8080/chat?s="
     val BASE_URL = "http://172.20.10.12:8080/emotion?s="
     var userChat: String = " "
     var emotionScore: EmotionInfo = EmotionInfo()
@@ -84,7 +84,7 @@ class ChattingActivity : AppCompatActivity() {
                 currentTime(),
                 "no emotion" ///////////////////////////////////////사용자 챗 감정 추가
             )
-            userChat = userChat.plus(edit_chat_message.text.toString()).plus("$")
+            userChat = userChat.plus(edit_chat_message.text.toString()).plus("+")
             Log.i("추가", userChat)
             //list에 추가
             messageList.add(chat_data)
@@ -255,7 +255,7 @@ class ChattingActivity : AppCompatActivity() {
                     .readTimeout(3, TimeUnit.MINUTES)
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .build()
-                val BASE_URL = "http://172.20.10.12:8080/emotion?s=".plus(userChat)
+                val BASE_URL = "http://192.168.198.210:8080/emotion?s=".plus(userChat)
                 var req = Request.Builder().url(BASE_URL).build()
                 client.newCall(req).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {

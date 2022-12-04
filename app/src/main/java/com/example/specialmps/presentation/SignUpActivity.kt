@@ -1,10 +1,12 @@
-package com.example.specialmps
+package com.example.specialmps.presentation
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.specialmps.R
+import com.example.specialmps.UserInfo
 import com.example.specialmps.databinding.ActivitySignupBinding
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_signup.*
@@ -79,7 +81,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
 
-    fun register(userinfo: UserInfo, uid: String) {
+    private fun register(userinfo: UserInfo, uid: String) {
         rdatabase.child("User").child(uid).setValue(userinfo)
         var i = Intent()
         i.putExtra("success", true)

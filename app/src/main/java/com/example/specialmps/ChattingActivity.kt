@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewManager
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -42,8 +41,8 @@ class ChattingActivity : AppCompatActivity() {
     var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
-    val serverURL = "http://172.30.1.28:8080/chat?s="
-    val BASE_URL = "http://172.30.1.28:8080/emotion?s="
+    val serverURL = "http://192.168.198.210:8080/chat?s="
+    val BASE_URL = "http://172.20.10.12:8080/emotion?s="
     var userChat: String = " "
     var emotionScore: EmotionInfo = EmotionInfo()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +84,7 @@ class ChattingActivity : AppCompatActivity() {
                 currentTime(),
                 "no emotion" ///////////////////////////////////////사용자 챗 감정 추가
             )
-            userChat = userChat.plus(edit_chat_message.text.toString()).plus(" ")
+            userChat = userChat.plus(edit_chat_message.text.toString()).plus("+")
             Log.i("추가", userChat)
             //list에 추가
             messageList.add(chat_data)
@@ -212,8 +211,14 @@ class ChattingActivity : AppCompatActivity() {
     fun saveDB(chat: List<Message>) { //대화종료 후
         Log.i("saveDB ", chat.size.toString())
         //로딩 페이지 띄우기
-        val layout=layoutInflater.inflate(R.layout.loading_layout,null)
-        addContentView(layout,LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT))
+        val layout = layoutInflater.inflate(R.layout.loading_layout, null)
+        addContentView(
+            layout,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
+        )
 
         //대화종료 후 messageList를 firebase에 추가
         var table = mDatabase.getReference("Record").child(userid).child(chat_start_time)
@@ -250,7 +255,7 @@ class ChattingActivity : AppCompatActivity() {
                     .readTimeout(3, TimeUnit.MINUTES)
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .build()
-                val BASE_URL = "http://172.30.1.28:8080/emotion?s=".plus(userChat)
+                val BASE_URL = "http://192.168.198.210:8080/emotion?s=".plus(userChat)
                 var req = Request.Builder().url(BASE_URL).build()
                 client.newCall(req).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {

@@ -12,5 +12,6 @@ data class EmotionInfo(
     val anger: Float = 0f,
     val miserable: Float = 0f,
     val depress: Float = 0f,
-    val tired: Float = 0f
+    val tired: Float = 0f,
+    val emotionalColor:String="noinfo"
 ) : Serializable

@@ -156,8 +156,6 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                     var curURL = argUrl.plus(pIndex.toString())
                     val url = URL(curURL)
                     val doc = Jsoup.connect(url.toString()).parser(Parser.xmlParser()).get()
-
-
                     var hospitals: Elements
                     hospitals = doc.select("row")
                     if(hospitals.size <= 0){
@@ -200,9 +198,13 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                 } //arr 배열에 정보 추가 완료
 
             }.join()
+            //CSV search
+            if(cityCheck){
+                findPlaceCSV(searchKeyword)
+            }else{
+                findHospitalCSV(searchKeyword)
+            }
             Log.i("hospital search num", arr.size.toString())
-
-            //광진구 검색도 추가..?
 
             googlemap.clear()
 
@@ -450,7 +452,6 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 //            Log.i("hospitalInfo first ",hospitalInfo)
 
             do{
-
                 hospitalInfo=line!!.readLine().toString()
                 Log.i("hospitalInfo first ",hospitalInfo)
 
@@ -475,6 +476,79 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             Log.e("CSV Read Error : ",e.toString())
         }
     }
+
+    fun findPlaceCSV(place:String){
+        var line:BufferedReader?=null
+        var hospitalInfo=""
+        try {
+            line= BufferedReader(InputStreamReader(resources.openRawResource(R.raw.gwangjin_hospital),"UTF-8"))
+            //첫 줄은 attribute name 이므로 건너뛴다.
+//            hospitalInfo=line!!.readLine().toString()
+//            Log.i("hospitalInfo first ",hospitalInfo)
+
+            do{
+
+                hospitalInfo=line!!.readLine().toString()
+                Log.i("hospitalInfo first ",hospitalInfo)
+
+                if(hospitalInfo.contains("NO")){
+                    continue
+                }else if(hospitalInfo.contains("끝")){
+                    return
+                }
+
+                var infos=hospitalInfo.split(",")
+                //infos[1]=병원이름, infos[3]=전화번호, infos[4]=경도, infos[5]=위도, infos[6]=주소
+                Log.i("저장되는 정보 ",infos[1]+" "+infos[3]+" "+infos[4]+" "+infos[5]+" "+infos[6])
+                if(infos[6].contains(place)){
+                    var l : LatLng
+                    l = LatLng(infos[4].toDouble(), infos[5].toDouble())
+                    var address=infos[6].replace("\"","")
+                    arr.add(HospitalInfo(infos[1], infos[3], l, address))
+                }
+            }while(line!=null)
+
+        }catch (e:IOException){
+            Log.e("CSV Read Error : ",e.toString())
+        }
+    }
+
+    fun findHospitalCSV(hospital:String){
+        var line:BufferedReader?=null
+        var hospitalInfo=""
+        try {
+            line= BufferedReader(InputStreamReader(resources.openRawResource(R.raw.gwangjin_hospital),"UTF-8"))
+            //첫 줄은 attribute name 이므로 건너뛴다.
+//            hospitalInfo=line!!.readLine().toString()
+//            Log.i("hospitalInfo first ",hospitalInfo)
+
+            do{
+
+                hospitalInfo=line!!.readLine().toString()
+                Log.i("hospitalInfo first ",hospitalInfo)
+
+                if(hospitalInfo.contains("NO")){
+                    continue
+                }else if(hospitalInfo.contains("끝")){
+                    return
+                }
+
+                var infos=hospitalInfo.split(",")
+                //infos[1]=병원이름, infos[3]=전화번호, infos[4]=경도, infos[5]=위도, infos[6]=주소
+                Log.i("저장되는 정보 ",infos[1]+" "+infos[3]+" "+infos[4]+" "+infos[5]+" "+infos[6])
+                if(infos[1].contains(hospital)){
+                    var l : LatLng
+                    l = LatLng(infos[4].toDouble(), infos[5].toDouble())
+                    var address=infos[6].replace("\"","")
+                    arr.add(HospitalInfo(infos[1], infos[3], l, address))
+                }
+            }while(line!=null)
+
+        }catch (e:IOException){
+            Log.e("CSV Read Error : ",e.toString())
+        }
+    }
+
     /*
     private fun requestHospital(){
         val subscription = hospitalManager.getHospitalList()

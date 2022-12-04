@@ -32,6 +32,7 @@ class ResultActivity : AppCompatActivity() {
     var final_angry: Float = 0f //분노 최종 점수
     var final_neutrality: Float = 0f //중립 최종 점수
     var final_happiness: Float = 0f //행복 최종 점수
+    lateinit var emotionalColor:String //#FF8989 빨, #FFE088 노, #9BAFEB 파, #B0B0B0 회
     val mDatabase = FirebaseDatabase.getInstance()
     lateinit var userid: String
     lateinit var name: String
@@ -78,12 +79,14 @@ class ResultActivity : AppCompatActivity() {
         comment1.text =
             "$name 님의 최종 점수는 우울 $final_depression%, 분노 $final_angry%, 행복 $final_happiness%, 중립 $final_neutrality% 입니다."
         val comment2 = findViewById<TextView>(R.id.comment_chat)
-        comment2.text = make_comment(final_depression)
+        if(final_happiness>final_angry+final_depression){
+            comment2.text = make_comment(true,final_depression)
+        }else{
+            comment2.text = make_comment(false,final_depression)
+        }
 
         val graph = findViewById<LineChart>(R.id.line_chart)
         create_line_chart(graph)
-
-
     }
 
     fun calculate_emotion() {
@@ -118,57 +121,72 @@ class ResultActivity : AppCompatActivity() {
             emotionScore.surprise + emotionScore.tense + emotionScore.pain + emotionScore.anger
         final_depression = emotionScore.miserable + emotionScore.depress + emotionScore.tired
 
+        val list= listOf<Float>(final_angry,final_depression,final_happiness,final_neutrality)
+        list.sortedDescending()
+        when(list[0]){//오름차순으로 했을 때 가장 높은 수치로 색 선정
+            //#FF8989 빨, #FFE088 노, #9BAFEB 파, #B0B0B0 회
+            final_angry->{emotionalColor="#FF8989"}
+            final_depression->{emotionalColor="#9BAFEB"}
+            final_happiness->{emotionalColor="#FFE088"}
+            final_neutrality->{emotionalColor="#B0B0B0"}
+        }
     }
 
-    fun make_comment(depression: Float): String {
+    fun make_comment(happiness:Boolean,depression: Float): String {
         var last_comment = ""
-        val num = (0..1).random() + 1
-        when (depression) {
-            0f -> {
-                val resID: Int = resources.getIdentifier("zero${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 1f..10f -> {
-                val resID: Int = resources.getIdentifier("zero${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 10f..20f -> {
-                val resID: Int = resources.getIdentifier("ten${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 20f..30f -> {
-                val resID: Int = resources.getIdentifier("twenty${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 30f..40f -> {
-                val resID: Int = resources.getIdentifier("thirty${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 40f..50f -> {
-                val resID: Int = resources.getIdentifier("forty${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 50f..60f -> {
-                val resID: Int = resources.getIdentifier("fifty${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 60f..70f -> {
-                val resID: Int = resources.getIdentifier("sixty${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 70f..80f -> {
-                val resID: Int =
-                    resources.getIdentifier("seventy${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 80f..90f -> {
-                val resID: Int = resources.getIdentifier("eighty${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
-            in 90f..100f -> {
-                val resID: Int = resources.getIdentifier("ninety${num}", "string", this.packageName)
-                last_comment = resources.getString(resID)
-            }
+        if(happiness){//positive comments
+            val num=(0..2).random()+1
+            val resID:Int=resources.getIdentifier("positive${num}","string",this.packageName)
+            last_comment=resources.getString(resID)
+        }else{//negative comments
+            val num = (0..1).random() + 1
+            when (depression) {
+                0f -> {
+                    val resID: Int = resources.getIdentifier("zero${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 1f..10f -> {
+                    val resID: Int = resources.getIdentifier("zero${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 10f..20f -> {
+                    val resID: Int = resources.getIdentifier("ten${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 20f..30f -> {
+                    val resID: Int = resources.getIdentifier("twenty${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 30f..40f -> {
+                    val resID: Int = resources.getIdentifier("thirty${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 40f..50f -> {
+                    val resID: Int = resources.getIdentifier("forty${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 50f..60f -> {
+                    val resID: Int = resources.getIdentifier("fifty${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 60f..70f -> {
+                    val resID: Int = resources.getIdentifier("sixty${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 70f..80f -> {
+                    val resID: Int =
+                        resources.getIdentifier("seventy${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 80f..90f -> {
+                    val resID: Int = resources.getIdentifier("eighty${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+                in 90f..100f -> {
+                    val resID: Int = resources.getIdentifier("ninety${num}", "string", this.packageName)
+                    last_comment = resources.getString(resID)
+                }
+        }
         }
 
         return last_comment

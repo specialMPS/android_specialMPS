@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SignUpActivity">
+    tools:context=".presentation.SignUpActivity">
 
 
     <TextView
@@ -25,6 +25,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:background="@drawable/custom_input"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:ems="10"
         android:hint="@string/input_name"
         android:inputType="textPersonName"
@@ -35,6 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:background="@drawable/custom_input"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:ems="10"
         android:hint="@string/input_id"
         android:inputType="textPersonName"
@@ -45,6 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:background="@drawable/custom_input"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:ems="10"
         android:hint="@string/input_pw"
         android:inputType="textPassword"
@@ -56,6 +65,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:background="@drawable/custom_input"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:ems="10"
         android:hint="@string/input_birth"
         android:inputType="date"
@@ -98,8 +110,9 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="@drawable/btn_radius"
+            android:text="@string/register"
             android:textColor="#FFFFFF"
-            android:text="@string/register" />
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/signup_cancel"
@@ -108,8 +121,9 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="@drawable/btn_radius"
+            android:text="@string/cancel"
             android:textColor="#FFFFFF"
-            android:text="@string/cancel" />
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

@@ -75,4 +75,5 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
     implementation 'nl.psdcompany:duo-navigation-drawer:3.0.0'
+    implementation 'com.opencsv:opencsv:5.6'
 }

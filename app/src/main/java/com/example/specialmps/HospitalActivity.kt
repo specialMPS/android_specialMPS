@@ -32,6 +32,9 @@ import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
 import org.jsoup.select.Elements
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 import java.net.URL
 import java.net.URLEncoder
 
@@ -199,7 +202,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             }.join()
             Log.i("hospital search num", arr.size.toString())
 
-
+            //광진구 검색도 추가..?
 
             googlemap.clear()
 
@@ -234,6 +237,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
             return
         }
         //서울역 37.5552002, 126.9706291
+        //건대 공대 37.541223, 127.079283
 
         fusedLocationClient?.lastLocation?.addOnSuccessListener { location : Location? ->
             if (location != null){
@@ -241,7 +245,8 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                 Log.i("현재위치", location.latitude.toString() +", "+location.longitude.toString())
             }
             else{//사용자의 기기에서 현재위치를 받을 수 없는 경우
-                loc = LatLng(37.5552002, 126.9706291)
+                //loc = LatLng(37.5552002, 126.9706291)
+                loc= LatLng(37.541223, 127.079283)
             }
 
         }
@@ -329,7 +334,7 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
 //            val mk1 = googlemap.addMarker(options)
 //            mk1.showInfoWindow()
             initMapListener()
-
+            readCSV() //광진구 병원 정보 추가
             initHospital()
 
         }
@@ -435,6 +440,41 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         return true
     }
 
+    fun readCSV(){ //광진구 병원 정보
+        var line:BufferedReader?=null
+        var hospitalInfo=""
+        try {
+            line= BufferedReader(InputStreamReader(resources.openRawResource(R.raw.gwangjin_hospital),"UTF-8"))
+            //첫 줄은 attribute name 이므로 건너뛴다.
+//            hospitalInfo=line!!.readLine().toString()
+//            Log.i("hospitalInfo first ",hospitalInfo)
+
+            do{
+
+                hospitalInfo=line!!.readLine().toString()
+                Log.i("hospitalInfo first ",hospitalInfo)
+
+                if(hospitalInfo.contains("NO")){
+                    continue
+                }else if(hospitalInfo.contains("끝")){
+                    return
+                }
+
+                var infos=hospitalInfo.split(",")
+                //infos[1]=병원이름, infos[3]=전화번호, infos[4]=경도, infos[5]=위도, infos[6]=주소
+                Log.i("저장되는 정보 ",infos[1]+" "+infos[3]+" "+infos[4]+" "+infos[5]+" "+infos[6])
+                var l : LatLng
+                l = LatLng(infos[4].toDouble(), infos[5].toDouble())
+                //Log.i("hospitalcheck", hospital.select("BIZPLC_NM").text().toString())
+                var address=infos[6].replace("\"","")
+                arr.add(HospitalInfo(infos[1], infos[3], l, address))
+
+            }while(line!=null)
+
+        }catch (e:IOException){
+            Log.e("CSV Read Error : ",e.toString())
+        }
+    }
     /*
     private fun requestHospital(){
         val subscription = hospitalManager.getHospitalList()

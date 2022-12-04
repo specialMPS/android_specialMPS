@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.specialmps.presentation.SignUpActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -63,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
     fun btnClick(){
         signup_btn.setOnClickListener {
             //회원가입 창
-            val i=Intent(this,SignUpActivity::class.java)
+            val i=Intent(this, SignUpActivity::class.java)
             startActivity(i)
         }
 

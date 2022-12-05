@@ -241,7 +241,7 @@ class MenuActivity : AppCompatActivity() , DuoMenuView.OnMenuClickListener{
 
             calendar.addDecorators(TodayDecorator(),SundayDecorator(),SaturdayDecorator())
             if(dates.size>0){
-                calendar!!.addDecorator(EventDecorator(dates))//색 지정하려면 인자 추가
+                calendar!!.addDecorator(EventDecorator(dates,userid))//색 지정하려면 인자 추가
             }
         },1000)
 
@@ -347,20 +347,60 @@ private class TodayDecorator:DayViewDecorator{
     }
 }
 
-private class EventDecorator(dates:Collection<CalendarDay>?):DayViewDecorator{///////////
+private class EventDecorator(dates:Collection<CalendarDay>?,userid:String):DayViewDecorator{///////////
+    val mDatabase= FirebaseDatabase.getInstance()
     val dates:HashSet<CalendarDay>
+    var color="#d4a373" //기본 색으로 설정
+    var userid=""
 
     init {
         this.dates=HashSet(dates)
+        this.userid=userid
     }
 
     override fun shouldDecorate(day: CalendarDay?): Boolean {
+        if(dates.contains(day)) //deco해야하는 날짜이면
+            color=findColor(day) //색 변경 --> 나중에 확인 필요
         return dates.contains(day)
     }
 
     override fun decorate(view: DayViewFacade?) {
-        view?.addSpan(DotSpan(13F,Color.parseColor("#d4a373")))//기본 색
+        //#FF8989 빨, #FFE088 노, #9BAFEB 파, #B0B0B0 회 사용자 감정 색
+        //#d4a373 기본 색
+        view?.addSpan(DotSpan(13F,Color.parseColor(color)))//사용자 감정 색
     }
 
+    private fun findColor(day:CalendarDay?):String{
+        var check=""
+        if(day!!.day in 1..9){
+            check=day!!.year.toString()+"-"+day!!.month.toString()+"-0"+day!!.day.toString()
+        }else{
+            check=day!!.year.toString()+"-"+day!!.month.toString()+"-"+day!!.day.toString()
+        }
+        Log.i("day to string ",check)
+        CoroutineScope(Dispatchers.IO).launch {
+            mDatabase.getReference("Emotion").child(userid).addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.exists()){
+                        for(date in snapshot.children){
+                            val item=date.key.toString()
+                            if(item.contains(check)){ //상담날짜에 day가 해당되면 색 찾기
+                                val emotion=date.getValue(EmotionInfo::class.java)
+                                if(emotion!=null){
+                                    color=emotion.emotionalColor
+                                }
+                            }
+                        }
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
+
+        return color
+    }
 
 }

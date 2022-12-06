@@ -41,10 +41,10 @@ class ChattingActivity : AppCompatActivity() {
     var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
-    val serverURL = "http://172.30.1.16:8080/chat?s="
+    val serverURL = "http://172.30.1.54:8080/chat?s="
     val BASE_URL = "http://172.20.10.12:8080/emotion?s="
     var userChat: String = " "
-    var emotionScore: EmotionInfo = EmotionInfo()
+    var emotionScore: ResponseEmotion = ResponseEmotion()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)
@@ -66,6 +66,14 @@ class ChattingActivity : AppCompatActivity() {
         default_chat_setting()
 
 
+
+
+
+
+        initListener()
+    }
+
+    private fun initListener() {
         mMessageRecycler = findViewById(R.id.recycler_chat)
         mMessageRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -73,7 +81,6 @@ class ChattingActivity : AppCompatActivity() {
         mMessageAdapter = MessageListAdapter(this, messageList)
         mMessageRecycler.adapter = mMessageAdapter
 
-        //var table=mDatabase.getReference("Record").child(user).child(chat_start_time)
 
         //사용자가 메세지를 입력했을 때
         btn_chat_send.setOnClickListener {
@@ -84,7 +91,7 @@ class ChattingActivity : AppCompatActivity() {
                 currentTime(),
                 "no emotion" ///////////////////////////////////////사용자 챗 감정 추가
             )
-            userChat = userChat.plus(edit_chat_message.text.toString()).plus("+")
+            userChat = userChat.plus(edit_chat_message.text.toString()).plus(" ")
             Log.i("추가", userChat)
             //list에 추가
             messageList.add(chat_data)
@@ -102,7 +109,6 @@ class ChattingActivity : AppCompatActivity() {
 */
             Log.i("chatting", "입력완료")
         }
-
     }
 
     fun default_chat_setting() {
@@ -130,7 +136,7 @@ class ChattingActivity : AppCompatActivity() {
         messageList.add(second)
     }
 
-    fun getAIresponse(message: String) {
+    fun getAIresponse(message: String) {//채팅할 때 서버 연결
         CoroutineScope(Dispatchers.Main).launch {
             CoroutineScope(Dispatchers.IO).launch {
                 var curURL = serverURL.plus(message)
@@ -251,11 +257,11 @@ class ChattingActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             var result = CoroutineScope(Dispatchers.Default).async {
                 var client = OkHttpClient.Builder()
-                    .connectTimeout(3, TimeUnit.MINUTES)
-                    .readTimeout(3, TimeUnit.MINUTES)
+                    .connectTimeout(5, TimeUnit.MINUTES)
+                    .readTimeout(5, TimeUnit.MINUTES)
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .build()
-                val BASE_URL = "http://172.30.1.16:8080/emotion?s=".plus(userChat)
+                val BASE_URL = "http://172.30.1.54:8080/emotion?s=".plus(userChat)
                 var req = Request.Builder().url(BASE_URL).build()
                 client.newCall(req).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
@@ -263,15 +269,21 @@ class ChattingActivity : AppCompatActivity() {
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        var str = response.body?.string()
-                        Log.i("bodyEmotion", str!!)
-                        var dto = Gson().fromJson<EmotionInfo>(str, EmotionInfo::class.java)
-                        runOnUiThread {
-                            emotionScore = dto
-                            Log.i("checkEmotion", emotionScore.toString())
-                            //로딩 뷰는 액티비티 빠져나왔다 다시 들어오면 없어져 있음.
-                            moveActivity()
+                        if(response.isSuccessful){
+                            var str = response.body?.string()
+                            Log.i("bodyEmotion", str!!)
+                            var dto = Gson().fromJson<ResponseEmotion>(str, ResponseEmotion::class.java)
+                            runOnUiThread {
+                                emotionScore = dto
+                                Log.i("checkEmotion", emotionScore.toString())
+                                //로딩 뷰는 액티비티 빠져나왔다 다시 들어오면 없어져 있음.
+                                moveActivity()
+                            }
                         }
+                        else{
+
+                        }
+
                     }
 
                 })
@@ -282,10 +294,23 @@ class ChattingActivity : AppCompatActivity() {
     }
 
     fun moveActivity() {
+        val finalEmotion = EmotionInfo(
+            emotionScore.neutral,
+            emotionScore.happy,
+            emotionScore.surprise,
+            emotionScore.tense,
+            emotionScore.pain,
+            emotionScore.anger,
+            emotionScore.miserable,
+            emotionScore.depress,
+            emotionScore.tired,
+            ""
+        )
         var i = Intent(this, ResultActivity::class.java)
         i.putExtra("userID", userid)
         i.putExtra("name", name)
-        i.putExtra("emotionScore", emotionScore)
+        i.putExtra("startTime",chat_start_time)
+        i.putExtra("emotionScore", finalEmotion)
         startActivity(i)
         finish()
     }

@@ -1,9 +1,9 @@
 package com.example.specialmps
 
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
-
-data class EmotionInfo(
+@Serializable
+data class ResponseEmotion(
     val neutral: Float = 0f,
     val happy: Float = 0f,
     val surprise: Float = 0f,
@@ -12,6 +12,5 @@ data class EmotionInfo(
     val anger: Float = 0f,
     val miserable: Float = 0f,
     val depress: Float = 0f,
-    val tired: Float = 0f,
-    var emotionalColor:String="noinfo"
-):Serializable
+    val tired: Float = 0f
+)

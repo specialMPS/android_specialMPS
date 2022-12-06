@@ -19,10 +19,10 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,7 +36,8 @@ class ResultActivity : AppCompatActivity() {
     val mDatabase = FirebaseDatabase.getInstance()
     lateinit var userid: String
     lateinit var name: String
-    lateinit var emotionScore: EmotionInfo
+    lateinit var startTime :String
+    var emotionScore = EmotionInfo()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +51,20 @@ class ResultActivity : AppCompatActivity() {
             name = intent.getStringExtra("name").toString()
         }
 
+        if(intent.hasExtra("startTime")){
+            startTime = intent.getStringExtra("startTime").toString()
+        }
+
         if (intent.hasExtra("emotionScore")) {
             emotionScore = intent.getSerializableExtra("emotionScore") as EmotionInfo
             calculate_emotion()
         }
 
+        ///테스트용
+//        userid = "test"
+//        emotionalColor = "#FFE088"
+//        name="박유빈"
+//        startTime=""
 
         //뒤로가기 버튼
         val toolbar: Toolbar = findViewById(R.id.toolbar_channel)
@@ -85,35 +95,37 @@ class ResultActivity : AppCompatActivity() {
             comment2.text = make_comment(false,final_depression)
         }
 
-        val graph = findViewById<LineChart>(R.id.line_chart)
-        create_line_chart(graph)
+
+        create_line_chart()
     }
 
     fun calculate_emotion() {
-        var total: Float = 0f
-        total += emotionScore.neutral
-        total += emotionScore.anger
-        total += emotionScore.happy
-        total += emotionScore.depress
-        total += emotionScore.miserable
-        total += emotionScore.pain
-        total += emotionScore.surprise
-        total += emotionScore.tense
-        total += emotionScore.tired
-        String.format("%.1f", emotionScore.tired / total * 100f).toFloat()
-
+//        var total: Float = 0f
+//        total += emotionScore.neutral
+//        total += emotionScore.anger
+//        total += emotionScore.happy
+//        total += emotionScore.depress
+//        total += emotionScore.miserable
+//        total += emotionScore.pain
+//        total += emotionScore.surprise
+//        total += emotionScore.tense
+//        total += emotionScore.tired
+//        String.format("%.1f", emotionScore.tired / total * 100f).toFloat()
+//
         var cal_emotion: EmotionInfo = EmotionInfo(
-            String.format("%.1f", emotionScore.neutral / total * 100f).toFloat(),
-            String.format("%.1f", emotionScore.happy / total * 100f).toFloat(),
-            String.format("%.1f", emotionScore.surprise / total * 100f).toFloat(),
-            String.format("%.1f", emotionScore.tense / total * 100f).toFloat(),
-            String.format("%.1f", emotionScore.pain / total * 100f).toFloat(),
-            String.format("%.1f", emotionScore.anger / total * 100f).toFloat(),
-            String.format("%.1f", emotionScore.miserable / total * 100f).toFloat(),
-            String.format("%.1f", emotionScore.depress / total * 100f).toFloat(),
-            String.format("%.1f", emotionScore.tired / total * 100f).toFloat()
+            String.format("%.1f", emotionScore.neutral).toFloat(),
+            String.format("%.1f", emotionScore.happy).toFloat(),
+            String.format("%.1f", emotionScore.surprise).toFloat(),
+            String.format("%.1f", emotionScore.tense).toFloat(),
+            String.format("%.1f", emotionScore.pain).toFloat(),
+            String.format("%.1f", emotionScore.anger).toFloat(),
+            String.format("%.1f", emotionScore.miserable).toFloat(),
+            String.format("%.1f", emotionScore.depress).toFloat(),
+            String.format("%.1f", emotionScore.tired).toFloat()
         )
         emotionScore = cal_emotion
+
+
 
         final_neutrality = emotionScore.neutral
         final_happiness = emotionScore.happy
@@ -129,6 +141,11 @@ class ResultActivity : AppCompatActivity() {
             final_depression->{emotionalColor="#9BAFEB"}
             final_happiness->{emotionalColor="#FFE088"}
             final_neutrality->{emotionalColor="#B0B0B0"}
+        }
+        emotionScore.emotionalColor = emotionalColor
+        var table = mDatabase.getReference("Emotion").child(userid).child(startTime)
+        table.push().setValue(emotionScore).addOnSuccessListener {
+            Log.i("감정 저장 확인", emotionScore.toString())
         }
     }
 
@@ -287,30 +304,109 @@ class ResultActivity : AppCompatActivity() {
 //        return spannableString
 //    }
 
-    fun create_line_chart(lineChart: LineChart) {
+    fun create_line_chart() {
         //최근 10개의 슬픔 퍼센티지 가지고 와서 그래프화로 추이 나타내기
 
-        lineChart.clear()
 
         val entry = arrayListOf<Entry>()
-        val chartData = LineData()
+
+
+//        mDatabase.getReference("Emotion").child(userid).limitToLast(10).addValueEventListener(object :
+//            ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                if(snapshot.exists()){
+//                    var index :Float = 0f
+//                    for(snap in snapshot.children){
+//                        index+=1f
+//                        val emotionData=snap.getValue(EmotionInfo::class.java)
+//                        if (emotionData != null) {
+//                            val depression = emotionData.miserable + emotionData.depress + emotionData.tired
+//                            entry.add(Entry(index, depression))
+//                        }
+//                    }
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {}
+//        })
+
 
         //sample data
         val cal = Calendar.getInstance()
         cal.time = Date()
         val df = SimpleDateFormat("yyyy-MM-dd")
         var datetime = 1f
-        entry.add(Entry(1f, 0f))
-        entry.add(Entry(2f, 0f))
-        entry.add(Entry(3f, 56.3f))
-        entry.add(Entry(4f, 34.2f))
-        entry.add(Entry(5f, 19.8f))
-        entry.add(Entry(6f, 7.9f))
-        entry.add(Entry(7f, 90.1f))
-        entry.add(Entry(8f, 64.4f))
-        entry.add(Entry(9f, 15.6f))
-        entry.add(Entry(10f, 49.2f))
+//        entry.add(Entry(1f, 0f))
+//        entry.add(Entry(2f, 0f))
+//        entry.add(Entry(3f, 56.3f))
+//        entry.add(Entry(4f, 34.2f))
+//        entry.add(Entry(5f, 19.8f))
+//        entry.add(Entry(6f, 7.9f))
+//        entry.add(Entry(7f, 90.1f))
+//        entry.add(Entry(8f, 64.4f))
+//        entry.add(Entry(9f, 15.6f))
+//        entry.add(Entry(10f, 49.2f))
 
+        //데이터베이스에서 최근 10개 날짜, 우울 최종 수치 가져오기
+        val query = mDatabase.getReference("Emotion").child(userid).limitToLast(10)
+        query.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.i("snapshot.key : ", snapshot.key.toString())
+                var index :Float = 0f
+                for(snap in snapshot.children){
+                    Log.i("snap", snap.toString())
+                    index+=1f
+                    for(snapEach in snap.children){
+                        val emotionData=snapEach.getValue(EmotionInfo::class.java)
+                        Log.i("emotionData", index.toString()+" : "+emotionData.toString())
+                        if (emotionData != null) {
+                            val depression = emotionData.miserable + emotionData.depress + emotionData.tired
+                            Log.i("depression", depression.toString())
+                            entry.add(Entry(index, depression))
+                            Log.i("entry", entry.toString())
+                        }
+                        break
+                    }
+                }
+                drawLineChart(entry)
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+
+        })
+//        query.addChildEventListener(object : ChildEventListener {
+//                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+//                    Log.i("snapshot.key : ", snapshot.key.toString())
+//                    var index :Float = 0f
+//                    for(snap in snapshot.children){
+//                        index+=1f
+//                        val emotionData=snap.getValue(EmotionInfo::class.java)
+//                        Log.i("emotionData", emotionData.toString())
+//                        if (emotionData != null) {
+//                            val depression = emotionData.miserable + emotionData.depress + emotionData.tired
+//                            entry.add(Entry(index, depression))
+//                        }
+//                    }
+//                }
+//
+//                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?){
+//
+//                }
+//
+//                override fun onChildRemoved(snapshot: DataSnapshot) {}
+//
+//                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+//
+//                override fun onCancelled(error: DatabaseError) {}
+//
+//            })
+
+
+    }
+    private fun drawLineChart(entry : List<Entry>){
+        val lineChart = findViewById<LineChart>(R.id.line_chart)
+        lineChart.clear()
+        val chartData = LineData()
         val lineDatas = LineDataSet(entry, "최근 10개 우울감정 수치")
         chartData.addDataSet(lineDatas)
 
@@ -325,31 +421,7 @@ class ResultActivity : AppCompatActivity() {
         lineDatas.setCircleColor(Color.parseColor("#c2c5aa"))
         lineDatas.valueTextSize = 10f
 
-        //데이터베이스에서 최근 10개 날짜, 우울 최종 수치 가져오기
-        val result = mDatabase.getReference("Result").child(userid).limitToLast(10)
-            .addChildEventListener(object : ChildEventListener {
-                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    Log.i("snapshot.key : ", snapshot.key.toString())
 
-                }
-
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onChildRemoved(snapshot: DataSnapshot) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
 
         lineChart.extraBottomOffset = 5f
         lineChart.description.isEnabled = false

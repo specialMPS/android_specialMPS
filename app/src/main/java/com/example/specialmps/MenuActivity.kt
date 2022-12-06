@@ -56,6 +56,7 @@ class MenuActivity : AppCompatActivity() , DuoMenuView.OnMenuClickListener{
     private var mViewHolder: ViewHolder?=null
     private var mMenuAdapter:MenuAdapter?=null
     private var mTitles=ArrayList<String>()
+    var colorArray=ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +80,7 @@ class MenuActivity : AppCompatActivity() , DuoMenuView.OnMenuClickListener{
         mMenuAdapter!!.setViewSelected(0,true)
         title=mTitles[0]
 
+        findColor()
         init()
 
     }
@@ -206,7 +208,6 @@ class MenuActivity : AppCompatActivity() , DuoMenuView.OnMenuClickListener{
             mDatabase.getReference("Record").child(userid).addValueEventListener(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-
                     if(snapshot.exists()){
                         for(date in snapshot.children){
                             val item=date.key.toString()
@@ -225,7 +226,6 @@ class MenuActivity : AppCompatActivity() , DuoMenuView.OnMenuClickListener{
                             var day=CalendarDay.from(date)
                             dates.add(day)
                             //Log.i("총 날짜 개수 ",dates.size.toString())
-
                         }
                     }
                 }
@@ -241,9 +241,49 @@ class MenuActivity : AppCompatActivity() , DuoMenuView.OnMenuClickListener{
 
             calendar.addDecorators(TodayDecorator(),SundayDecorator(),SaturdayDecorator())
             if(dates.size>0){
-                calendar!!.addDecorator(EventDecorator(dates,userid))//색 지정하려면 인자 추가
+//                calendar!!.addDecorator(EventDecorator(dates,"#d4a373"))//색 지정하려면 인자 추가
+                Log.i("dates size ",dates.size.toString())
+                Log.i("color array size  ",colorArray.size.toString())
+                for(i in dates.indices){
+                    calender.addDecorator(EventDecorator(Collections.singleton(dates[i]),colorArray[i]))
+                }
             }
         },1000)
+
+    }
+
+    private fun findColor(){
+        var color="#d4a373"
+        val carray= listOf<String>("#FF8989", "#FFE088", "#9BAFEB", "#B0B0B0")
+        for (i in 0..51){
+            var num=(0..2).random()+1
+            colorArray.add(carray[num])
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            mDatabase.getReference("Emotion").child(userid).addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (date in snapshot.children) {
+                            val emotion=date.getValue(EmotionInfo::class.java)
+                            if(emotion!=null){
+                                Log.i("emotionColor ",emotion.emotionalColor)
+                                colorArray.add(emotion.emotionalColor)
+
+                            }else{
+                                colorArray.add(color)
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+
+        }
+//        Log.i("color array size  ",colorArray.size.toString())
 
     }
 
@@ -347,37 +387,43 @@ private class TodayDecorator:DayViewDecorator{
     }
 }
 
-private class EventDecorator(dates:Collection<CalendarDay>?,userid:String):DayViewDecorator{///////////
+private class EventDecorator(dates:Collection<CalendarDay>?,color:String):DayViewDecorator{///////////
     val mDatabase= FirebaseDatabase.getInstance()
     val dates:HashSet<CalendarDay>
-    var color="#d4a373" //기본 색으로 설정
+    var color=""
     var userid=""
 
     init {
         this.dates=HashSet(dates)
-        this.userid=userid
+        this.color=color
     }
 
     override fun shouldDecorate(day: CalendarDay?): Boolean {
-        if(dates.contains(day)) //deco해야하는 날짜이면
-            color=findColor(day) //색 변경 --> 나중에 확인 필요
+//        if(dates.contains(day)) {
+//            //Log.i("dates.contains(day) ",day.toString())
+//            //deco해야하는 날짜이면
+//
+//            color=findColor(day) //색 변경
+//        }
+
         return dates.contains(day)
     }
 
     override fun decorate(view: DayViewFacade?) {
         //#FF8989 빨, #FFE088 노, #9BAFEB 파, #B0B0B0 회 사용자 감정 색
         //#d4a373 기본 색
+        Log.i("decorate : ",color) //색을 우선 다 뿌리고 날짜 지정해서 표시하는 듯,,,,,,,,,,,,,,,
         view?.addSpan(DotSpan(13F,Color.parseColor(color)))//사용자 감정 색
     }
 
     private fun findColor(day:CalendarDay?):String{
         var check=""
         if(day!!.day in 1..9){
-            check=day!!.year.toString()+"-"+day!!.month.toString()+"-0"+day!!.day.toString()
+            check=day!!.year.toString()+"-"+(day!!.month+1).toString()+"-0"+day!!.day.toString()
         }else{
-            check=day!!.year.toString()+"-"+day!!.month.toString()+"-"+day!!.day.toString()
+            check=day!!.year.toString()+"-"+(day!!.month+1).toString()+"-"+day!!.day.toString()
         }
-        Log.i("day to string ",check)
+        //Log.i("day to string ",check)
         CoroutineScope(Dispatchers.IO).launch {
             mDatabase.getReference("Emotion").child(userid).addValueEventListener(object :
                 ValueEventListener {
@@ -385,9 +431,12 @@ private class EventDecorator(dates:Collection<CalendarDay>?,userid:String):DayVi
                     if(snapshot.exists()){
                         for(date in snapshot.children){
                             val item=date.key.toString()
+//                            Log.i("date ",item)
                             if(item.contains(check)){ //상담날짜에 day가 해당되면 색 찾기
+                                Log.i("item.contains(check) ",item)
                                 val emotion=date.getValue(EmotionInfo::class.java)
                                 if(emotion!=null){
+                                    Log.i("emotion.emotionColor ",emotion.toString())
                                     color=emotion.emotionalColor
                                 }
                             }
@@ -398,9 +447,8 @@ private class EventDecorator(dates:Collection<CalendarDay>?,userid:String):DayVi
                     TODO("Not yet implemented")
                 }
             })
-        }
-
-        return color
+       }
+        return "#d4a373"
     }
 
 }

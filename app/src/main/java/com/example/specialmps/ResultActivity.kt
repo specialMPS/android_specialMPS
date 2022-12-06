@@ -135,7 +135,7 @@ class ResultActivity : AppCompatActivity() {
 
         val list= listOf<Float>(final_angry,final_depression,final_happiness,final_neutrality)
         list.sortedDescending()
-        when(list[0]){//오름차순으로 했을 때 가장 높은 수치로 색 선정
+        when(list.first()){//오름차순으로 했을 때 가장 높은 수치로 색 선정-->수정해야할듯
             //#FF8989 빨, #FFE088 노, #9BAFEB 파, #B0B0B0 회
             final_angry->{emotionalColor="#FF8989"}
             final_depression->{emotionalColor="#9BAFEB"}
@@ -144,7 +144,7 @@ class ResultActivity : AppCompatActivity() {
         }
         emotionScore.emotionalColor = emotionalColor
         var table = mDatabase.getReference("Emotion").child(userid).child(startTime)
-        table.push().setValue(emotionScore).addOnSuccessListener {
+        table.setValue(emotionScore).addOnSuccessListener {
             Log.i("감정 저장 확인", emotionScore.toString())
         }
     }

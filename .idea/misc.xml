@@ -5,12 +5,13 @@
       <map>
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/btn_radius.xml" value="0.1835" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/chatting_tool.xml" value="0.1" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/circle.xml" value="0.1" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/drawable/loading.xml" value="0.1" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_chart_result.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_chatting.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_login.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_main.xml" value="0.16354166666666667" />
-        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_menu.xml" value="0.22" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_menu.xml" value="0.35833333333333334" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_recorded_chat.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_result.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/activity_server_example.xml" value="0.17916666666666667" />
@@ -20,6 +21,7 @@
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/chat_ballon.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/chat_ballon_etc.xml" value="0.22" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/circle_btn.xml" value="0.15989583333333332" />
+        <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/circleshape.xml" value="0.13802083333333334" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/content_sliding_root_nav.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/fragment_menu.xml" value="0.1" />
         <entry key="..\:/Users/love2/GitHub/android_specialMPS/app/src/main/res/layout/item_option.xml" value="0.3333333333333333" />

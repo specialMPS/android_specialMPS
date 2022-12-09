@@ -254,8 +254,8 @@ class MenuActivity : AppCompatActivity() , DuoMenuView.OnMenuClickListener{
 
     private fun findColor(){
         var color="#d4a373"
-        val carray= listOf("#FF8989", "#FFE088", "#9BAFEB", "#B0B0B0") //db에 데이터 추가되면 숫자 변경
-        for (i in 0..47){
+        val carray= listOf("#FF8989", "#FFE088", "#9BAFEB", "#B0B0B0")
+        for (i in 0..49){//db에 데이터 추가되면 숫자 변경
             var num=(0..3).random()
             colorArray.add(carray[num])
         }

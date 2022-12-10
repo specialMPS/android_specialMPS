@@ -16,22 +16,22 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ResultActivity"
+            android:name=".presentation.ResultActivity"
             android:exported="false" >
         </activity>
         <activity
-            android:name=".HospitalActivity"
+            android:name=".presentation.hospital.HospitalActivity"
             android:exported="false" />
-        <activity android:name=".MenuActivity" />
+        <activity android:name=".presentation.MenuActivity" />
         <activity
-            android:name=".RecordedChat"
+            android:name=".presentation.RecordedChat"
             android:exported="true" />
         <activity
-            android:name=".ChattingActivity"
+            android:name=".presentation.ChattingActivity"
             android:exported="true" />
-        <activity android:name=".presentation.SignUpActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".presentation.signup.SignUpActivity" />
+        <activity android:name=".presentation.LoginActivity" />
+        <activity android:name=".presentation.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

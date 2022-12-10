@@ -1,4 +1,4 @@
-package com.example.specialmps
+package com.example.specialmps.presentation.hospital
 
 import android.Manifest
 import android.content.Context
@@ -14,6 +14,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.specialmps.R
+import com.example.specialmps.data.HospitalInfo
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationServices
@@ -69,7 +71,8 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hospital)
         map_linearlayout.visibility = View.GONE
-        markerIcon = BitmapUtils.resizeMapIcons(this, R.drawable.marker_icon, markerIconSize, markerIconSize)
+        markerIcon =
+            BitmapUtils.resizeMapIcons(this, R.drawable.marker_icon, markerIconSize, markerIconSize)
         init()
     }
     fun init(){
@@ -150,7 +153,6 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                     argUrl = argUrl.plus("pIndex=")
                 }
                 arr.clear()
-                Log.i("url 확인", argUrl)
                 for( pIndex in 1..30){
 
                     var curURL = argUrl.plus(pIndex.toString())
@@ -165,15 +167,11 @@ class HospitalActivity : AppCompatActivity(), GoogleMap.OnMarkerClickListener {
                     for (hospital in hospitals) {
                         val available = hospital.select("BSN_STATE_NM").text()
 
-                        Log.i("apicheck", "병원정보")
                         val latitude= hospital.select("REFINE_WGS84_LAT").text()
                         val longitude = hospital.select("REFINE_WGS84_LOGT").text()
                         val hosName = hospital.select("CENTER_NM").text()
                         val hosPhone = hospital.select("TELNO").text()
                         val hosAddress = hospital.select("REFINE_ROADNM_ADDR").text()
-//                        if(latitude == null || longitude == null){
-//                            continue
-//                        }
                         if(!cityCheck){//병원 검색한 경우
                             if(!hosName.contains(searchKeyword, true)){
                                 continue

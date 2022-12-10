@@ -1,4 +1,4 @@
-package com.example.specialmps.data
+package com.example.specialmps.data.remote
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json

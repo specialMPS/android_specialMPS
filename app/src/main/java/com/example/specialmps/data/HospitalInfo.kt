@@ -1,4 +1,4 @@
-package com.example.specialmps
+package com.example.specialmps.data
 
 import com.google.android.gms.maps.model.LatLng
 

@@ -1,4 +1,4 @@
-package com.example.specialmps
+package com.example.specialmps.presentation
 
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -12,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.specialmps.R
+import com.example.specialmps.data.EmotionInfo
+import com.example.specialmps.data.Message
+import com.example.specialmps.data.remote.ResponseEmotion
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_chatting.*
@@ -41,7 +45,7 @@ class ChattingActivity : AppCompatActivity() {
     var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
-    val serverURL = "http://172.30.1.54:8080/chat?s="
+    val serverURL = "http://172.20.10.12:8080/chat?s="
     val BASE_URL = "http://172.20.10.12:8080/emotion?s="
     var userChat: String = " "
     var emotionScore: ResponseEmotion = ResponseEmotion()
@@ -261,7 +265,7 @@ class ChattingActivity : AppCompatActivity() {
                     .readTimeout(5, TimeUnit.MINUTES)
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .build()
-                val BASE_URL = "http://172.30.1.54:8080/emotion?s=".plus(userChat)
+                val BASE_URL = "http://172.20.10.12:8080/emotion?s=".plus(userChat)
                 var req = Request.Builder().url(BASE_URL).build()
                 client.newCall(req).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
@@ -269,18 +273,18 @@ class ChattingActivity : AppCompatActivity() {
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        if(response.isSuccessful){
+                        if (response.isSuccessful) {
                             var str = response.body?.string()
                             Log.i("bodyEmotion", str!!)
-                            var dto = Gson().fromJson<ResponseEmotion>(str, ResponseEmotion::class.java)
+                            var dto =
+                                Gson().fromJson<ResponseEmotion>(str, ResponseEmotion::class.java)
                             runOnUiThread {
                                 emotionScore = dto
                                 Log.i("checkEmotion", emotionScore.toString())
                                 //로딩 뷰는 액티비티 빠져나왔다 다시 들어오면 없어져 있음.
                                 moveActivity()
                             }
-                        }
-                        else{
+                        } else {
 
                         }
 
@@ -309,7 +313,7 @@ class ChattingActivity : AppCompatActivity() {
         var i = Intent(this, ResultActivity::class.java)
         i.putExtra("userID", userid)
         i.putExtra("name", name)
-        i.putExtra("startTime",chat_start_time)
+        i.putExtra("startTime", chat_start_time)
         i.putExtra("emotionScore", finalEmotion)
         startActivity(i)
         finish()

@@ -1,12 +1,13 @@
-package com.example.specialmps.presentation
+package com.example.specialmps.presentation.signup
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.specialmps.R
-import com.example.specialmps.UserInfo
+import com.example.specialmps.data.UserInfo
 import com.example.specialmps.databinding.ActivitySignupBinding
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_signup.*
@@ -15,6 +16,7 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var rdatabase: DatabaseReference
 
     private lateinit var binding: ActivitySignupBinding
+    private val viewModel by viewModels<SignUpViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +33,7 @@ class SignUpActivity : AppCompatActivity() {
             var pw = binding.signupPw.text.toString()
             //성별, 생년월일
             var date = binding.signupDate.text.toString()
-            if (id == "" || pw == "" || name == "" || date == "") {
+            if (viewModel.isEmpty(id, pw, name, date)) {
                 Toast.makeText(this, R.string.signup_info_request, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }

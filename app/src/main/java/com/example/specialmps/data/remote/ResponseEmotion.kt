@@ -1,4 +1,4 @@
-package com.example.specialmps
+package com.example.specialmps.data.remote
 
 import kotlinx.serialization.Serializable
 

@@ -16,6 +16,8 @@ import com.example.specialmps.R
 import com.example.specialmps.data.EmotionInfo
 import com.example.specialmps.data.Message
 import com.example.specialmps.data.remote.ResponseEmotion
+import com.example.specialmps.databinding.ActivityChattingBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_chatting.*
@@ -40,18 +42,25 @@ class ChattingActivity : AppCompatActivity() {
     lateinit var mMessageAdapter: MessageListAdapter
     lateinit var mMessageRecycler: RecyclerView
     lateinit var name: String
+
     val messageList = mutableListOf<Message>()
     var topic_list = ArrayList<String>()
     var userid: String = ""
     val mDatabase = FirebaseDatabase.getInstance()
     var chat_start_time: String = ""
+
     val serverURL = "http://172.20.10.12:8080/chat?s="
     val BASE_URL = "http://172.20.10.12:8080/emotion?s="
+
     var userChat: String = " "
     var emotionScore: ResponseEmotion = ResponseEmotion()
+
+    private lateinit var binding: ActivityChattingBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chatting)
+        binding = ActivityChattingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //뒤로가기 버튼
         val toolbar: Toolbar = findViewById(R.id.toolbar_channel)
@@ -199,7 +208,7 @@ class ChattingActivity : AppCompatActivity() {
                     .setPositiveButton("결과보기", object : DialogInterface.OnClickListener {
                         override fun onClick(p0: DialogInterface?, p1: Int) {
                             //대화 리스트 데이터베이스에 저장하고 검사결과 페이지로 넘어가기
-                            saveDB(messageList)
+                            getEmotionResult()
                         }
                     }).setNegativeButton("취소", null).show()
             }
@@ -216,6 +225,14 @@ class ChattingActivity : AppCompatActivity() {
     fun currentTime(): String {//현재시간
         val time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
         return time
+    }
+
+    private fun failUserSnackbar(errorMessage: String) {
+        Snackbar.make(
+            binding.root,
+            errorMessage,
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     fun saveDB(chat: List<Message>) { //대화종료 후
@@ -258,8 +275,13 @@ class ChattingActivity : AppCompatActivity() {
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .build()
 
+
+
+
+    }
+    fun getEmotionResult(){
         CoroutineScope(Dispatchers.Main).launch {
-            var result = CoroutineScope(Dispatchers.Default).async {
+            var result = CoroutineScope(Dispatchers.IO).async {
                 var client = OkHttpClient.Builder()
                     .connectTimeout(5, TimeUnit.MINUTES)
                     .readTimeout(5, TimeUnit.MINUTES)
@@ -269,6 +291,7 @@ class ChattingActivity : AppCompatActivity() {
                 var req = Request.Builder().url(BASE_URL).build()
                 client.newCall(req).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
+                        failUserSnackbar("네트워크 오류가 발생했습니다.")
                         Log.i("network", "failure")
                     }
 
@@ -282,10 +305,11 @@ class ChattingActivity : AppCompatActivity() {
                                 emotionScore = dto
                                 Log.i("checkEmotion", emotionScore.toString())
                                 //로딩 뷰는 액티비티 빠져나왔다 다시 들어오면 없어져 있음.
+                                saveDB(messageList)
                                 moveActivity()
                             }
                         } else {
-
+                            failUserSnackbar("결과 보기를 다시 클릭해주세요!")
                         }
 
                     }
@@ -293,8 +317,6 @@ class ChattingActivity : AppCompatActivity() {
                 })
             }.await()
         }
-
-
     }
 
     fun moveActivity() {
